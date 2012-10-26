@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     int x, y;
 
     QApplication a(argc, argv);
-    MainWindow w;
-    w.setWindowTitle("DIC Sim");
+    MainWindow window;
+    window.setWindowTitle("DIC Sim");
 
     QDesktopWidget *desktop = QApplication::desktop();
 
@@ -24,10 +24,16 @@ int main(int argc, char *argv[])
     x = (screenWidth - WIDTH) / 2;
     y = (screenHeight - HEIGHT) / 2;
 
-    w.resize(WIDTH, HEIGHT);
-    w.move(x, y);
+    window.resize(WIDTH, HEIGHT);
+    window.move(x, y);
 
-    w.show();
+    window.setStyleSheet(
+                "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
+                "QWidget #console{background : #006600}"
+                "QWidget #breadboard{background : #efefef; border-radius : 10px}"
+                );
+
+    window.show();
     
     return a.exec();
 }

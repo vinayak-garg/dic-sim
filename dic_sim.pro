@@ -11,9 +11,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    console.cpp \
+    breadboard.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    console.h \
+    breadboard.h
 
 RESOURCES += \
     resource.qrc
+
+OTHER_FILES +=

@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/images/components"/>
     <qresource prefix="/images/icons"/>
-    <qresource prefix="/images/textures">
-        <file>images/textures/icobbg1.png</file>
+    <qresource prefix="/bg">
+        <file>images/textures/bg1.png</file>
     </qresource>
 </RCC>
