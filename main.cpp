@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     window.setStyleSheet(
                 "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
                 "QWidget #console{background : #006600}"
-                "QWidget #breadboard{background : #efefef; border-radius : 10px}"
+                "QWidget #breadboard{background : #fefcfa; border-radius : 10px}"
                 );
 
     window.show();

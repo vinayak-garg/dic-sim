@@ -1,5 +1,7 @@
 <RCC>
-    <qresource prefix="/images/components"/>
+    <qresource prefix="/button">
+        <file>images/components/mainswitch_off.png</file>
+    </qresource>
     <qresource prefix="/images/icons"/>
     <qresource prefix="/bg">
         <file>images/textures/bg1.png</file>
