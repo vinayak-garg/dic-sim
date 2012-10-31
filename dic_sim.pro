@@ -13,11 +13,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     console.cpp \
-    breadboard.cpp
+    breadboard.cpp \
+    cell.cpp \
+    wire.cpp
 
 HEADERS  += mainwindow.h \
     console.h \
-    breadboard.h
+    breadboard.h \
+    cell.h \
+    wire.h
 
 RESOURCES += \
     resource.qrc

@@ -10,6 +10,7 @@ class Console : public QWidget
     Q_OBJECT
 public:
     explicit Console(QWidget *parent = 0);
+    void setWireColor(QColor color);
     
 signals:
     
@@ -17,7 +18,6 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *);
-    //void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
 
 private:

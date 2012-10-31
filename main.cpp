@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
                 "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
                 "QWidget #console{background : #006600}"
                 "QWidget #breadboard{background : #fefcfa; border-radius : 10px}"
+                "QGraphicsView{background : #fefcfa; border-radius : 10px}"
                 );
 
     window.show();

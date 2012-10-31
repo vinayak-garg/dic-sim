@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include <QApplication>
+#include <QColorDialog>
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
@@ -25,16 +26,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     QAction *undoAction = new QAction("&Undo", this);
     undoAction->setShortcut(tr("Ctrl+Z"));
+
     QAction *redoAction = new QAction("&Redo", this);
     redoAction->setShortcut(tr("Ctrl+Y"));
+
+    QAction *chooseWireColorAction = new QAction("Choose Wire &Color", this);
+    chooseWireColorAction->setShortcut(tr("Ctrl+C"));
+    connect(chooseWireColorAction, SIGNAL(triggered()), this, SLOT(actionChooseWireColor()));
 
     QMenu *editMenu;
     editMenu = menuBar()->addMenu("&Edit");
     editMenu->addAction(undoAction);
     editMenu->addAction(redoAction);
+    editMenu->addSeparator();
+    editMenu->addAction(chooseWireColorAction);
 
     QAction *aboutAction = new QAction("&About", this);
-
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(actionAbout()));
 
     QMenu *helpMenu;
@@ -78,4 +85,15 @@ MainWindow::~MainWindow()
 void MainWindow::actionAbout()
 {
     QMessageBox::information(this, "About DIC Sim", "DIC Sim is a simulator for prototyping circuits built using Digital ICs.<br/>Author : Vinayak Garg<br/>Version : 0.1");
+}
+
+void MainWindow::actionChooseWireColor()
+{
+    //QColorDialog picker(this);
+    QColor c = QColorDialog::getColor(Qt::black);
+    if (c.isValid())
+    {
+        console->setWireColor(c);
+    }
+
 }

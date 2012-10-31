@@ -1,7 +1,10 @@
 #ifndef BREADBOARD_H
 #define BREADBOARD_H
 
-#include <QWidget>
+#include "cell.h"
+
+#include <QGraphicsScene>
+//#include <QMouseEvent>
 
 const int kTop = 40;
 const int kLeft = 30;
@@ -50,6 +53,12 @@ enum Groups
     kBus2
 };
 
+enum Mode
+{
+    first,
+    second
+};
+
 struct Contact
 {
     Groups group;
@@ -65,22 +74,31 @@ struct Contact
     }
 };
 
-class Breadboard : public QWidget
+class Breadboard : public QGraphicsScene
 {
     Q_OBJECT
 public:
     explicit Breadboard(QWidget *parent = 0);
-    
+
+    static const int BB_WIDTH = 620;
+    static const int BB_HEIGHT = 480;
+
+    void setWireColor(QColor);
 signals:
     
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *);
-    void mousePressEvent(QMouseEvent *);
-    void mouseMoveEvent(QMouseEvent * e);
+    //void paintEvent(QPaintEvent *);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    //void mouseMoveEvent(QMouseEvent * e);
 
 private:
+
+    Mode mode;
+
+    QPointF lastMousePos;
+    Cell *lastRect;
 
     QColor highlightColor;
     QColor selectedTColor;
@@ -90,6 +108,7 @@ private:
     QColor borderColor;
     QColor backgroundColor;
 
+    QColor wireColor;
 };
 
 #endif // BREADBOARD_H

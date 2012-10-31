@@ -15,6 +15,7 @@ public:
 
 public slots:
     void actionAbout();
+    void actionChooseWireColor();
 
 private:
     Console *console;
