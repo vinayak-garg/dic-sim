@@ -1,6 +1,11 @@
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
 #include "mainwindow.h"
+#include "led.h"
+#include "cell.h"
+#include "powerbutton.h"
+#include "togglebutton.h"
+#include "block.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,8 +18,15 @@ int main(int argc, char *argv[])
     int x, y;
 
     QApplication a(argc, argv);
+
+    LED::initLed();
+    Cell::initCell();
+    PowerButton::init();
+    ToggleButton::initToggleButton();
+    Block::init();
+
     MainWindow window;
-    window.setWindowTitle("DIC Sim");
+    window.setWindowTitle("DIC Sim v0.1");
 
     QDesktopWidget *desktop = QApplication::desktop();
 
@@ -29,9 +41,9 @@ int main(int argc, char *argv[])
 
     window.setStyleSheet(
                 "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
-                "QWidget #console{background : #006600}"
+
                 "QWidget #breadboard{background : #fefcfa; border-radius : 10px}"
-                "QGraphicsView{background : #fefcfa; border-radius : 10px}"
+                "QGraphicsView{background : #007700; border-radius : 5px}"
                 );
 
     window.show();

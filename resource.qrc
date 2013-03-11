@@ -1,8 +1,14 @@
 <RCC>
     <qresource prefix="/button">
-        <file>images/components/mainswitch_off.png</file>
+        <file alias="main_off">images/components/mainswitch_off.png</file>
+        <file alias="toggle_off">images/components/switch_off.png</file>
+        <file alias="main_on">images/components/mainswitch_on.png</file>
+        <file alias="toggle_on">images/components/switch_on.png</file>
     </qresource>
-    <qresource prefix="/images/icons"/>
+    <qresource prefix="/components">
+        <file alias="led_on">images/components/led_on.png</file>
+        <file alias="led_off">images/components/led_off.png</file>
+    </qresource>
     <qresource prefix="/bg">
         <file>images/textures/bg1.png</file>
     </qresource>

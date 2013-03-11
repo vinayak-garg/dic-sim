@@ -1,12 +1,25 @@
 #include "mainwindow.h"
 #include "console.h"
+#include "iclexer.h"
+#include "icparser.h"
+#include "icdialog.h"
+#include "icviewer.h"
+#include "blockdata.h"
+
+#include <fstream>
+#include <vector>
 
 #include <QtGui>
-#include <QApplication>
-#include <QColorDialog>
-#include <QAction>
-#include <QMenuBar>
-#include <QMenu>
+#include <QtDebug>
+
+std::ifstream *infile;
+
+QStringList *icNameList;
+QStringList *icPinsList;
+QStringList *icDescList;
+QStringList *icLabelList;
+
+std::vector<BlockData> ICData;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,14 +27,22 @@ MainWindow::MainWindow(QWidget *parent)
     /****************** Menu Bar ******************/
     QAction *newAction = new QAction("&New File", this);
     newAction->setShortcut(tr("Ctrl+N"));
+    connect(newAction, SIGNAL(triggered()), this, SLOT(actionNew()));
+    QAction *openAction = new QAction("&Open File", this);
+    openAction->setShortcut(tr("Ctrl+O"));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(actionOpen()));
+    QAction *saveAction = new QAction("&Save File", this);
+    saveAction->setShortcut(tr("Ctrl+S"));
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(actionSave()));
     QAction *quitAction = new QAction("&Quit", this);
     quitAction->setShortcut(tr("Ctrl+Q"));
-
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     QMenu *fileMenu;
     fileMenu = menuBar()->addMenu("&File");
     fileMenu->addAction(newAction);
+    fileMenu->addAction(openAction);
+    fileMenu->addAction(saveAction);
     fileMenu->addAction(quitAction);
 
     QAction *undoAction = new QAction("&Undo", this);
@@ -41,6 +62,24 @@ MainWindow::MainWindow(QWidget *parent)
     editMenu->addSeparator();
     editMenu->addAction(chooseWireColorAction);
 
+    QAction *insertWireAction = new QAction("Insert &Wire", this);
+    insertWireAction->setShortcut(tr("Ctrl+W"));
+    connect(insertWireAction, SIGNAL(triggered()), this, SLOT(actionInsertWire()));
+
+    QAction *insertLEDAction = new QAction("Insert &LED", this);
+    insertLEDAction->setShortcut(tr("Ctrl+L"));
+    connect(insertLEDAction, SIGNAL(triggered()), this, SLOT(actionInsertLED()));
+
+    QAction *insertICAction = new QAction("Insert &IC", this);
+    insertICAction->setShortcut(tr("Ctrl+I"));
+    connect(insertICAction, SIGNAL(triggered()), this, SLOT(actionInsertIC()));
+
+    QMenu *insertMenu;
+    insertMenu = menuBar()->addMenu("&Insert");
+    insertMenu->addAction(insertWireAction);
+    insertMenu->addAction(insertLEDAction);
+    insertMenu->addAction(insertICAction);
+
     QAction *aboutAction = new QAction("&About", this);
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(actionAbout()));
 
@@ -49,19 +88,19 @@ MainWindow::MainWindow(QWidget *parent)
     helpMenu->addAction(aboutAction);
 
     /*************** Central Contents ***************/
-
     QWidget *centralWidget = new QWidget;
     centralWidget->setObjectName(QObject::tr("centralWidget"));
 
     console = new Console;
     console->setObjectName(QObject::tr("console"));
+    consoleView = new QGraphicsView(console);
+    consoleView->setFixedSize(Console::CONSOLE_WIDTH, Console::CONSOLE_HEIGHT);
 
     QVBoxLayout *vLayout = new QVBoxLayout;
-
     QHBoxLayout *hLayout = new QHBoxLayout;
 
     hLayout->addStretch(1);
-    hLayout->addWidget(console);
+    hLayout->addWidget(consoleView);
     hLayout->addStretch(1);
 
     vLayout->addStretch(1);
@@ -69,12 +108,17 @@ MainWindow::MainWindow(QWidget *parent)
     vLayout->addStretch(1);
 
     centralWidget->setLayout(vLayout);
-
-    //centralWidget->setStyleSheet("QWidget #centralWidget{background-image : url(:/it/images/textures/icobbg1.png);}");
-    //if (QFile::exists(":/it/images/textures/icobbg1.png"))
-      //  actionAbout();
-
     setCentralWidget(centralWidget);
+
+    /************* Containers ****************/
+    icNameList = new QStringList;
+    icPinsList = new QStringList;
+    icDescList = new QStringList;
+    icLabelList = new QStringList;
+
+    /************ Functions ******************/
+    parseICs();
+    icdialog = new ICDialog(this, icNameList, icDescList);
 }
 
 MainWindow::~MainWindow()
@@ -82,18 +126,141 @@ MainWindow::~MainWindow()
     delete console;
 }
 
+void MainWindow::actionNew()
+{
+    delete console;
+    console = new Console;
+    console->setObjectName(QObject::tr("console"));
+    consoleView->setScene(console);
+}
+
+void MainWindow::actionOpen()
+{
+    QString fileName =
+            QFileDialog::getOpenFileName(this, tr("Open Circuit"), "",
+                                         tr("Digital Circuit (*.dic);;All Files (*)"));
+    if (!fileName.isEmpty())
+    {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::information(this, tr("Unable to open file"),
+                                     file.errorString());
+            return;
+        }
+        QDataStream in(&file);
+        in.setVersion(QDataStream::Qt_4_8);
+
+        actionNew();
+        in >> *console;
+    }
+}
+
+void MainWindow::actionSave()
+{
+    QString fileName =
+            QFileDialog::getSaveFileName(this, tr("Save Circuit"), "",
+                                         tr("Digital Circuit (*.dic);;All Files (*)"));
+    if (!fileName.isEmpty())
+    {
+        if (!fileName.endsWith(".dic"))
+            fileName.append(".dic");
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::information(this, tr("Unable to save file"),
+                                     file.errorString());
+            return;
+        }
+        QDataStream out(&file);
+        out.setVersion(QDataStream::Qt_4_8);
+        out << *console;
+    }
+}
+
 void MainWindow::actionAbout()
 {
-    QMessageBox::information(this, "About DIC Sim", "DIC Sim is a simulator for prototyping circuits built using Digital ICs.<br/>Author : Vinayak Garg<br/>Version : 0.1");
+    QMessageBox::information(this, "About DIC Sim",
+        "DIC Sim is a simulator for prototyping circuits built using Digital ICs."
+        "<br/>Author : Vinayak Garg<br/>Version : 0.1");
+    circuit.reset(new Circuit(console));
 }
 
 void MainWindow::actionChooseWireColor()
 {
-    //QColorDialog picker(this);
     QColor c = QColorDialog::getColor(Qt::black);
     if (c.isValid())
     {
         console->setWireColor(c);
     }
+}
 
+void MainWindow::actionInsertIC()
+{
+    if (icdialog->exec() == QDialog::Accepted)
+    {
+        int index = icdialog->getIndex();
+        ICViewer *icv = new ICViewer(this, icNameList->at(index),
+                                     icLabelList->at(index));
+        icv->show();
+        console->setMode(Mode::inserting_ic);
+        console->setIC(icNameList->at(index), icPinNumList[index]);
+    }
+}
+
+void MainWindow::parseICs()
+{
+    QDir dir("icdata", "*.ic");
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+
+    QFileInfoList filelist = dir.entryInfoList();
+    for (int i = 0; i < filelist.size(); ++i)
+    {
+        ICData.clear();
+        QFileInfo fileInfo = filelist.at(i);
+        //icNameList->append(fileInfo.baseName());
+        QByteArray ba = fileInfo.filePath().toLocal8Bit();
+        infile = new std::ifstream(ba.data());
+        initLexer(infile);
+        Parser p;
+        p.parse();
+        infile->close();
+        delete infile;
+/*
+        for (auto it = ICData.begin(); it != ICData.end(); it++)
+        {
+            qDebug() << it->id << ' ' << it->inPin[0] << ','
+                     << it->outPin.size();
+        }
+*/
+        ICDataList.push_back(std::move(ICData));
+    }
+
+    //Clean description list
+    for (auto it = icNameList->begin(); it != icNameList->end(); ++it)
+    {
+        QString &s = *it;
+        s.chop(1);
+        s.remove(0, 1);
+    }
+    for (auto it = icPinsList->begin(); it != icPinsList->end(); ++it)
+    {
+        QString s = *it;
+        s.chop(1);
+        s.remove(0, 1);
+        icPinNumList.append(s.toShort());
+    }
+    icPinsList->clear();
+    for (auto it = icDescList->begin(); it != icDescList->end(); ++it)
+    {
+        QString &s = *it;
+        s.chop(1);
+        s.remove(0, 1);
+    }
+    for (auto it = icLabelList->begin(); it != icLabelList->end(); ++it)
+    {
+        QString &s = *it;
+        s.chop(1);
+        s.remove(0, 1);
+    }
 }
