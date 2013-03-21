@@ -1,38 +1,51 @@
 #include "quickunion.h"
+#include "breadboard.h"
 
 #include <iostream>
+#include <cassert>
 
-template<class T>
-QuickUnion<T>::QuickUnion(int _size) : parent(_size), size(_size)
+QuickUnion::QuickUnion(size_t _size) :
+    parent(_size), state(_size, State::undefined), size(_size)
 {
     for (int i = 0; i < size; i++)
         parent[i] = i;
 }
 
-template<class T>
-void QuickUnion<T>::join(T a, T b)
+bool QuickUnion::join(int a, int b)
 {
-    T rootA = root(a);
-    T rootB = root(b);
-    parent[rootB] = rootA;
-}
+    assert(a < size && b < size);
+    if (a < 0 && b < 0) //Both HIGH/LOW (fixed) voltage
+        return false;
 
-template<class T>
-T QuickUnion<T>::root(T s)
-{
-    while (s != parent[s])
+    if      (a == HIGH_OFFSET) _setFixedState(a, State::high);
+    else if (a == LOW_OFFSET ) _setFixedState(a, State::low);
+    else if (b == HIGH_OFFSET) _setFixedState(b, State::high);
+    else if (b == LOW_OFFSET ) _setFixedState(b, State::low);
+    else
     {
-        s = parent[s];
+        // a <-- b
+        int rootA = root(a);
+        int rootB = root(b);
+        parent[rootB] = rootA;
+        if (state[rootB] == State::high || state[rootA] == State::undefined)
+            state[rootA] = state[rootB];
     }
-    return s;
+    return true;
 }
 
-template<class T>
-void QuickUnion<T>::print()
+int QuickUnion::root(int a)
 {
-    for (T i = 0; i < size; i++)
+    while (a != parent[a])
+    {
+        parent[a] = parent[parent[a]]; //path compression
+        a = parent[a];
+    }
+    return a;
+}
+
+void QuickUnion::print()
+{
+    for (int i = 0; i < size; i++)
         std::cout << '[' << i << ',' << root(i) << ']' << ' ';
     std::cout << std::endl;
 }
-
-template class QuickUnion<short>;

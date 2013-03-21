@@ -21,6 +21,8 @@ public slots:
     void actionNew();
     void actionOpen();
     void actionSave();
+    void actionRunCircuit();
+    void actionStopCircuit();
     void actionAbout();
     void actionChooseWireColor();
     void actionInsertWire()
@@ -43,6 +45,7 @@ private:
     std::vector<std::vector<BlockData> > ICDataList;
     QList<short> icPinNumList;
     std::unique_ptr<Circuit> circuit;
+    bool circuitState;
 };
 
 #endif // MAINWINDOW_H

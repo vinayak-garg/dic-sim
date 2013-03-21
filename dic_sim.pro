@@ -47,7 +47,8 @@ HEADERS  += mainwindow.h \
     circuit.h \
     blockdata.h \
     block.h \
-    quickunion.h
+    quickunion.h \
+    state.h
 
 RESOURCES += \
     resource.qrc

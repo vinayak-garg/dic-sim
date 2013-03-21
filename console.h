@@ -26,6 +26,7 @@ public:
     explicit Console(QWidget *parent = 0);
     void setWireColor(QColor color);
     void setIC(QString name, int l);
+    int getOffset(QPointF p);
 
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;

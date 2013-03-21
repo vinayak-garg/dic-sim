@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     /****************** Menu Bar ******************/
+    /*
+     * File Menu
+     */
     QAction *newAction = new QAction("&New File", this);
     newAction->setShortcut(tr("Ctrl+N"));
     connect(newAction, SIGNAL(triggered()), this, SLOT(actionNew()));
@@ -45,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent)
     fileMenu->addAction(saveAction);
     fileMenu->addAction(quitAction);
 
+    /*
+     * Edit Menu
+     */
     QAction *undoAction = new QAction("&Undo", this);
     undoAction->setShortcut(tr("Ctrl+Z"));
 
@@ -62,6 +68,9 @@ MainWindow::MainWindow(QWidget *parent)
     editMenu->addSeparator();
     editMenu->addAction(chooseWireColorAction);
 
+    /*
+     * Insert Menu
+     */
     QAction *insertWireAction = new QAction("Insert &Wire", this);
     insertWireAction->setShortcut(tr("Ctrl+W"));
     connect(insertWireAction, SIGNAL(triggered()), this, SLOT(actionInsertWire()));
@@ -80,6 +89,24 @@ MainWindow::MainWindow(QWidget *parent)
     insertMenu->addAction(insertLEDAction);
     insertMenu->addAction(insertICAction);
 
+    /*
+     * Circuit Menu
+     */
+    QAction *runCircuitAction = new QAction("&Run Circuit", this);
+    runCircuitAction->setShortcut(tr("F5"));
+    connect(runCircuitAction, SIGNAL(triggered()), this, SLOT(actionRunCircuit()));
+    QAction *stopCircuitAction = new QAction("&Stop Circuit", this);
+    stopCircuitAction->setShortcut(tr("F12"));
+    connect(stopCircuitAction, SIGNAL(triggered()), this, SLOT(actionStopCircuit()));
+
+    QMenu *circuitMenu;
+    circuitMenu = menuBar()->addMenu("&Circuit");
+    circuitMenu->addAction(runCircuitAction);
+    circuitMenu->addAction(stopCircuitAction);
+
+    /*
+     * Help Menu
+     */
     QAction *aboutAction = new QAction("&About", this);
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(actionAbout()));
 
@@ -95,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     console->setObjectName(QObject::tr("console"));
     consoleView = new QGraphicsView(console);
     consoleView->setFixedSize(Console::CONSOLE_WIDTH, Console::CONSOLE_HEIGHT);
+    //connect(console, SIGNAL());
 
     QVBoxLayout *vLayout = new QVBoxLayout;
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -119,6 +147,9 @@ MainWindow::MainWindow(QWidget *parent)
     /************ Functions ******************/
     parseICs();
     icdialog = new ICDialog(this, icNameList, icDescList);
+
+    /************ Booleans *******************/
+    circuitState = false;
 }
 
 MainWindow::~MainWindow()
@@ -178,12 +209,29 @@ void MainWindow::actionSave()
     }
 }
 
+void MainWindow::actionRunCircuit()
+{
+    if (!circuitState)
+    {
+        circuit.reset(new Circuit(console));
+        circuitState = true;
+    }
+}
+
+void MainWindow::actionStopCircuit()
+{
+    if (circuitState)
+    {
+        circuit->stop();
+        circuitState = false;
+    }
+}
+
 void MainWindow::actionAbout()
 {
     QMessageBox::information(this, "About DIC Sim",
         "DIC Sim is a simulator for prototyping circuits built using Digital ICs."
-        "<br/>Author : Vinayak Garg<br/>Version : 0.1");
-    circuit.reset(new Circuit(console));
+        "<br/>Author : Vinayak Garg<br/>Version : 0.1.4");
 }
 
 void MainWindow::actionChooseWireColor()
@@ -222,8 +270,10 @@ void MainWindow::parseICs()
         QByteArray ba = fileInfo.filePath().toLocal8Bit();
         infile = new std::ifstream(ba.data());
         initLexer(infile);
+
         Parser p;
         p.parse();
+
         infile->close();
         delete infile;
 /*

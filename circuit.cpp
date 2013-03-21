@@ -8,39 +8,46 @@
 
 #include <bitset>
 
-const short kMaxTerminals = kCols*6;
+const short kMaxTerminals = kCols*6
+        + 10 /* Input points */
+        + 10 /* Output points */;
+const short INPUT_OFFSET = kCols*6;
+const short OUTPUT_OFFSET = INPUT_OFFSET + 10;
 
 Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
 {
-    QList<QGraphicsItem *> cellItems, items = console->items();
+    //terminals.setstate(HIGH_OFFSET, State::high);
+    //terminals.setstate(LOW_OFFSET, State::low);
+    for (int i = 0; i < 10; i++)
+    {
+        terminals.setstate(INPUT_OFFSET + i, State::low);
+        terminals.setstate(OUTPUT_OFFSET + i, State::low);
+    }
+
+    QList<QGraphicsItem *> items = console->items();
 
     Wire *wire;
-    Cell *cell;
+    LED *led;
     int i, j;
 
     for (auto it = items.begin(); it != items.end(); it++)
     {
         if ((wire = dynamic_cast<Wire *>(*it)))
         {
-            cellItems = console->items(wire->line().p1());
-            for (auto it2 = cellItems.begin(); it2 != cellItems.end(); it2++)
+            i = console->getOffset(wire->line().p1());
+            j = console->getOffset(wire->line().p2());
+            if (terminals.join(i, j))
             {
-                if ((cell = dynamic_cast<Cell *>(*it2)))
-                {
-                    i = (cell->row()/5)*kCols + cell->col();
-                    break;
-                }
+                connections.push_back(Connection(i, j));
+                wire->markRedundent(false);
             }
-            cellItems = console->items(wire->line().p2());
-            for (auto it2 = cellItems.begin(); it2 != cellItems.end(); it2++)
-            {
-                if ((cell = dynamic_cast<Cell *>(*it2)))
-                {
-                    j = (cell->row()/5)*kCols + cell->col();
-                    break;
-                }
-            }
-            terminals.join(i, j);
+            else
+                wire->markRedundent(true);
+        }
+        else if ((led = dynamic_cast<LED *>(*it)))
+        {
+            leds.push_back(led);
+            led->switchOn(POWER | STATE);
         }
     }
 #ifdef QT_DEBUG
@@ -48,8 +55,21 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
 #endif
 }
 
+void Circuit::stop()
+{
+    for (auto led : leds)
+    {
+        led->switchOff(POWER);
+    }
+}
+
 bool Circuit::checkConnections()
 {
     std::bitset<kMaxTerminals> usedTerminals;
+    return true;
+}
+
+bool Circuit::run()
+{
     return true;
 }

@@ -76,24 +76,14 @@ void Console::addBreadboard()
     {
         for (j = 0; j < 5; x+=kBox, j++)
         {
-            addItem(new Cell(x, kbR1, kSquare, kSquare, BUS_ROW, BUS_COL,
-                             highVoltageCell()));
-            addItem(new Cell(x, kbR1 + kBox, kSquare, kSquare, BUS_ROW, BUS_COL));
-            addItem(new Cell(x, kbR2, kSquare, kSquare, BUS_ROW, BUS_COL,
-                             highVoltageCell()));
-            addItem(new Cell(x, kbR2 + kBox, kSquare, kSquare, BUS_ROW, BUS_COL));
+            addItem(new Cell(x, kbR1, kSquare, kSquare, BUS_ROW_HIGH, BUS_COL));
+            addItem(new Cell(x, kbR1 + kBox, kSquare, kSquare, BUS_ROW_LOW, BUS_COL));
+            addItem(new Cell(x, kbR2, kSquare, kSquare, BUS_ROW_HIGH, BUS_COL));
+            addItem(new Cell(x, kbR2 + kBox, kSquare, kSquare, BUS_ROW_LOW, BUS_COL));
         }
     }
 }
-/*
-void Console::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
-*/
+
 void Console::setWireColor(QColor color)
 {
     wireColor = color;
@@ -103,6 +93,25 @@ void Console::setIC(QString name, int l)
 {
     curICName = name;
     curICpins = l;
+}
+
+int Console::getOffset(QPointF p)
+{
+    auto cellItems = this->items(p);
+    Cell *cell;
+    for (auto it = cellItems.begin(); it != cellItems.end(); it++)
+    {
+        if ((cell = dynamic_cast<Cell *>(*it)))
+        {
+            if (cell->row() == BUS_ROW_HIGH)
+                return HIGH_OFFSET;
+            else if (cell->row() == BUS_ROW_LOW)
+                return LOW_OFFSET;
+            else
+                return (cell->row()/5)*kCols + cell->col();
+        }
+    }
+    return -1;
 }
 
 void Console::mousePressEvent(QGraphicsSceneMouseEvent *event)

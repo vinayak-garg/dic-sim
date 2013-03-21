@@ -10,7 +10,6 @@ class LED : public QGraphicsItem
 {
 public:
     explicit LED(QPointF p1, QPointF p2);
-    //explicit LED(qreal _x1, qreal _y1, qreal _x2, qreal _y2);
     void set(qreal _x1, qreal _y1, qreal _x2, qreal _y2);
 
     QRectF boundingRect() const;
@@ -20,7 +19,7 @@ public:
 
     bool isOn()
     {
-        return (state & STATE) & POWER;
+        return (state & STATE) && (state & POWER);
     }
     QLineF line() const
     {
@@ -34,10 +33,12 @@ public slots:
     void switchOn(int8_t SorP = STATE)
     {
         state |= SorP;
+        update();
     }
     void switchOff(int8_t SorP = STATE)
     {
         state &= ~SorP;
+        update();
     }
 
 private:

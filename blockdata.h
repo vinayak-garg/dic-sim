@@ -6,7 +6,7 @@
 struct BlockData
 {
     int id;
-    std::vector<unsigned short> inPin, outPin;
+    std::vector<int> inPin, outPin;
     void reset()
     {
         id = 0;
