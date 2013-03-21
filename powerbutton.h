@@ -13,11 +13,8 @@ public:
                QWidget *widget);
     void set(bool _state)
     {
-        if (state != _state)
-        {
-            state = _state;
-            update();
-        }
+        state = _state;
+        update();
     }
     bool isOn()
     {
@@ -26,8 +23,6 @@ public:
 
     static void init();
 
-protected:
-    //void mousePressEvent(QMouseEvent *ev);
 public slots:
 private:
     qreal x, y;

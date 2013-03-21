@@ -27,11 +27,13 @@ public:
     void setWireColor(QColor color);
     void setIC(QString name, int l);
     int getOffset(QPointF p);
+    void togglePower();
 
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;
 
 signals:
+    void powerToggled();
 
 public slots:
     void setMode(Mode _mode)
@@ -40,7 +42,6 @@ public slots:
         isFirstPoint = true;
         lastMousePos = QPointF();
     }
-    void togglePower();
 
 protected:
     void addBreadboard();

@@ -122,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     console->setObjectName(QObject::tr("console"));
     consoleView = new QGraphicsView(console);
     consoleView->setFixedSize(Console::CONSOLE_WIDTH, Console::CONSOLE_HEIGHT);
-    //connect(console, SIGNAL());
+    connect(console, SIGNAL(powerToggled()), this, SLOT(circuitPowerToggled()));
 
     QVBoxLayout *vLayout = new QVBoxLayout;
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -213,6 +213,7 @@ void MainWindow::actionRunCircuit()
 {
     if (!circuitState)
     {
+        console->togglePower();
         circuit.reset(new Circuit(console));
         circuitState = true;
     }
@@ -222,6 +223,7 @@ void MainWindow::actionStopCircuit()
 {
     if (circuitState)
     {
+        console->togglePower();
         circuit->stop();
         circuitState = false;
     }
@@ -254,6 +256,14 @@ void MainWindow::actionInsertIC()
         console->setMode(Mode::inserting_ic);
         console->setIC(icNameList->at(index), icPinNumList[index]);
     }
+}
+
+void MainWindow::circuitPowerToggled()
+{
+    if (circuitState) //Circuit Running
+        actionStopCircuit();
+    else
+        actionRunCircuit();
 }
 
 void MainWindow::parseICs()

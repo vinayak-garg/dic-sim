@@ -13,7 +13,7 @@ Console::Console(QWidget *parent) :
 {
     powerButton = new PowerButton(780, 20);
     addItem(powerButton);
-    //connect(powerButton, SIGNAL(clicked()), this, SLOT(togglePower()));
+    power = false;
 
     mode = Mode::inserting_wire;
     isFirstPoint = true;
@@ -134,7 +134,7 @@ void Console::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
         else if (dynamic_cast<PowerButton *>(*it))
         {
-            togglePower();
+            emit powerToggled();
             break;
         }
     }

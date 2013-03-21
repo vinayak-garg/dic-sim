@@ -35,6 +35,8 @@ public slots:
     }
     void actionInsertIC();
 
+    void circuitPowerToggled();
+
 protected:
     void parseICs();
 
