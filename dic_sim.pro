@@ -11,44 +11,7 @@ QT       += core gui
 TARGET = dic_sim
 TEMPLATE = app
 
-
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    console.cpp \
-    breadboard.cpp \
-    cell.cpp \
-    wire.cpp \
-    led.cpp \
-    powerbutton.cpp \
-    togglebutton.cpp \
-    ic.cpp \
-    icparser.cpp \
-    iclexer.cpp \
-    icviewer.cpp \
-    icdialog.cpp \
-    circuit.cpp \
-    block.cpp \
-    quickunion.cpp
-
-HEADERS  += mainwindow.h \
-    console.h \
-    breadboard.h \
-    cell.h \
-    wire.h \
-    led.h \
-    utility.h \
-    powerbutton.h \
-    togglebutton.h \
-    ic.h \
-    iclexer.h \
-    icparser.h \
-    icviewer.h \
-    icdialog.h \
-    circuit.h \
-    blockdata.h \
-    block.h \
-    quickunion.h \
-    state.h
+INCLUDEPATH += include
 
 RESOURCES += \
     resource.qrc
@@ -56,3 +19,43 @@ RESOURCES += \
 OTHER_FILES += \
     icd.l \
     icd.y
+
+SOURCES += \
+    src/wire.cpp \
+    src/togglebutton.cpp \
+    src/quickunion.cpp \
+    src/powerbutton.cpp \
+    src/mainwindow.cpp \
+    src/main.cpp \
+    src/led.cpp \
+    src/icviewer.cpp \
+    src/icparser.cpp \
+    src/iclexer.cpp \
+    src/icdialog.cpp \
+    src/ic.cpp \
+    src/console.cpp \
+    src/circuit.cpp \
+    src/cell.cpp \
+    src/breadboard.cpp \
+    src/block.cpp
+
+HEADERS += \
+    include/wire.h \
+    include/utility.h \
+    include/togglebutton.h \
+    include/state.h \
+    include/quickunion.h \
+    include/powerbutton.h \
+    include/mainwindow.h \
+    include/led.h \
+    include/icviewer.h \
+    include/icparser.h \
+    include/iclexer.h \
+    include/icdialog.h \
+    include/ic.h \
+    include/console.h \
+    include/circuit.h \
+    include/cell.h \
+    include/breadboard.h \
+    include/blockdata.h \
+    include/block.h
