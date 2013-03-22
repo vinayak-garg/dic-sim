@@ -1,8 +1,10 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <QtGui>
+#include "constants.h"
 
+#include <QtGui>
+/*
 constexpr int terminalCell()
 {
     return 1 << 16;
@@ -15,7 +17,7 @@ constexpr int centerCell()
 {
     return 1 << 18;
 }
-
+*/
 class Cell : public QGraphicsRectItem
 {
 public:
@@ -38,13 +40,19 @@ public:
     }
     bool isCenter()
     {
-        return id & centerCell();
+        return ((m_r+1)%5 == 0 && (m_r+1)%10); //true for 4, 14, 24
+        //return id & centerCell();
     }
-    int8_t row()
+    int index()
+    {
+        return (m_r/5)*kCols + m_c;
+    }
+
+    int row()
     {
         return m_r;
     }
-    int8_t col()
+    int col()
     {
         return m_c;
     }

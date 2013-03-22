@@ -49,7 +49,7 @@ expr_list : expr_list expr | expr
 expr : ine funce oute {ICData.push_back(blockdata);blockdata.reset();}
      ;
 
-ine  : INT {blockdata.inPin.push_back(atoi(getTokenString()));}
+ine  : INT {blockdata.outPin.push_back(atoi(getTokenString()));}
      ;
 
 funce: '=' FUNC {blockdata.id = Block::mapBlockID(getTokenString());}
@@ -62,7 +62,7 @@ oute : '(' args ')'
 args : args ',' arg | arg
      ;
 
-arg  : INT {blockdata.outPin.push_back(atoi(getTokenString()));}
+arg  : INT {blockdata.inPin.push_back(atoi(getTokenString()));}
 
 %%
 

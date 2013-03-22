@@ -3,7 +3,9 @@
 
 static const int kPinHeight = 4;
 
-IC::IC(QString _name, int _l, QPointF _pos) : name(_name), l(_l)
+IC::IC(QString _name, int _l, QPointF _pos, int _index,
+       std::vector<BlockData> _blocks) :
+    name(_name), l(_l), blocks(_blocks), index(_index)
 {
     x = _pos.x() - 4;
     y = _pos.y();

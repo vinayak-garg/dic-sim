@@ -25,7 +25,7 @@ class Console : public QGraphicsScene
 public:
     explicit Console(QWidget *parent = 0);
     void setWireColor(QColor color);
-    void setIC(QString name, int l);
+    void setIC(QString name, int l, std::vector<BlockData> blocks);
     int getOffset(QPointF p);
     void togglePower();
 
@@ -63,6 +63,7 @@ private:
 
     QString curICName;
     int curICpins;
+    std::vector<BlockData> curICblocks;
 
     bool power;
     PowerButton *powerButton;

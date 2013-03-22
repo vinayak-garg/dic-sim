@@ -215,6 +215,7 @@ void MainWindow::actionRunCircuit()
     {
         console->togglePower();
         circuit.reset(new Circuit(console));
+        circuit->prepareConnections();
         circuitState = true;
     }
 }
@@ -254,7 +255,8 @@ void MainWindow::actionInsertIC()
                                      icLabelList->at(index));
         icv->show();
         console->setMode(Mode::inserting_ic);
-        console->setIC(icNameList->at(index), icPinNumList[index]);
+        console->setIC(icNameList->at(index), icPinNumList[index],
+                       ICDataList[index]);
     }
 }
 

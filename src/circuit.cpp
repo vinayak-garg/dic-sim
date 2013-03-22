@@ -28,6 +28,7 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
 
     Wire *wire;
     LED *led;
+    IC *ic;
     int i, j;
 
     for (auto it = items.begin(); it != items.end(); it++)
@@ -40,14 +41,19 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
             {
                 connections.push_back(Connection(i, j));
                 wire->markRedundent(false);
+                //usedTerminals[i]
             }
             else
                 wire->markRedundent(true);
         }
         else if ((led = dynamic_cast<LED *>(*it)))
         {
-            leds.push_back(led);
+            ledList.push_back(led);
             led->switchOn(POWER | STATE);
+        }
+        else if ((ic = dynamic_cast<IC *>(*it)))
+        {
+            icList.push_back(ic);
         }
     }
 #ifdef QT_DEBUG
@@ -55,21 +61,50 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
 #endif
 }
 
-void Circuit::stop()
+bool Circuit::prepareConnections()
 {
-    for (auto led : leds)
+    /*
+     * Connect ICs
+     */
+    for (auto ic : icList)
     {
-        led->switchOff(POWER);
+        int l = ic->length();
+        int index = ic->getindex();
+        for (auto block : ic->blocks)
+        {
+            BlockData bd = block;
+            for (int i = 0; i < bd.inPin.size(); i++)
+            {
+                bd.inPin[i] = mapICpinToCircuit(bd.inPin[i], l, index);
+            }
+            for (int i = 0; i < bd.outPin.size(); i++)
+            {
+                bd.outPin[i] = mapICpinToCircuit(bd.outPin[i], l, index);
+            }
+            blocks.push_back(bd);
+        }
     }
-}
-
-bool Circuit::checkConnections()
-{
-    std::bitset<kMaxTerminals> usedTerminals;
+#ifdef QT_DEBUG
+    for (auto b : blocks)
+    {
+        std::cout << b.id << '\n';
+        for (int i = 0; i < b.inPin.size(); i++)
+            std::cout << b.inPin[i] << ' ';
+        std::cout << std::endl;
+    }
+#endif
     return true;
 }
 
 bool Circuit::run()
 {
     return true;
+}
+
+void Circuit::stop()
+{
+    for (auto led : ledList)
+    {
+        led->switchOff(POWER);
+    }
 }

@@ -1,21 +1,37 @@
 #ifndef IC_H
 #define IC_H
 
+#include "blockdata.h"
+
 #include <QGraphicsItem>
 #include <QString>
+
+#include <vector>
 
 class IC : public QGraphicsItem
 {
 public:
-    explicit IC(QString _name, int _l, QPointF _pos);
+    explicit IC(QString _name, int _l, QPointF _pos, int _index,
+                std::vector<BlockData> _blocks);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
+    std::vector<BlockData> blocks;
+    int length()
+    {
+        return l;
+    }
+
+    int getindex()
+    {
+        return index;
+    }
+
 private:
-    QString name;
+    const QString name;
     qreal x, y;
-    int l;
+    int l, index;
 };
 
 #endif // IC_H

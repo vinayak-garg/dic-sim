@@ -1,7 +1,9 @@
 #ifndef CIRCUIT_H
 #define CIRCUIT_H
 
+#include "ic.h"
 #include "led.h"
+#include "breadboard.h"
 #include "blockdata.h"
 #include "console.h"
 #include "quickunion.h"
@@ -14,14 +16,26 @@ class Circuit
 {
 public:
     Circuit(Console *console);
-    bool checkConnections();
+    bool prepareConnections();
     bool run();
     void stop();
+protected:
+    int mapICpinToCircuit(int pin, int l, int topleftindex)
+    {
+        if (pin <= l)
+            return topleftindex + kCols + pin-1;
+        else
+            return topleftindex + (l*2 - pin);
+    }
+
 private:
     std::vector<std::vector<BlockData> > *ICDataListPtr;
     QuickUnion terminals;
+    std::vector<bool> usedTerminals;
     std::vector<Connection> connections;
-    std::vector<LED *> leds;
+    std::vector<LED *> ledList;
+    std::vector<IC *> icList;
+    std::vector<BlockData> blocks;
 };
 
 struct Connection

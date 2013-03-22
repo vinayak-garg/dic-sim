@@ -56,18 +56,18 @@ void Console::addBreadboard()
     {
         for (j = 0; j < 5; ++j)
         {
-            addItem(new Cell(x, ktR1 + j*kBox, kSquare, kSquare, j, i,
-                             terminalCell()|(j == 4 ? centerCell() : 0)));
-            addItem(new Cell(x, ktR2 + j*kBox, kSquare, kSquare, 5 + j, i,
-                             terminalCell()));
-            addItem(new Cell(x, ktR3 + j*kBox, kSquare, kSquare, 10 + j, i,
-                             terminalCell()|(j == 4 ? centerCell() : 0)));
-            addItem(new Cell(x, ktR4 + j*kBox, kSquare, kSquare, 15 + j, i,
-                             terminalCell()));
-            addItem(new Cell(x, ktR5 + j*kBox, kSquare, kSquare, 20 + j, i,
-                             terminalCell()|(j == 4 ? centerCell() : 0)));
-            addItem(new Cell(x, ktR6 + j*kBox, kSquare, kSquare, 25 + j, i,
-                             terminalCell()));
+            addItem(new Cell(x, ktR1 + j*kBox, kSquare, kSquare, j, i));
+                             //terminalCell()|(j == 4 ? centerCell() : 0)));
+            addItem(new Cell(x, ktR2 + j*kBox, kSquare, kSquare, 5 + j, i));
+                             //terminalCell()));
+            addItem(new Cell(x, ktR3 + j*kBox, kSquare, kSquare, 10 + j, i));
+                             //terminalCell()|(j == 4 ? centerCell() : 0)));
+            addItem(new Cell(x, ktR4 + j*kBox, kSquare, kSquare, 15 + j, i));
+                             //terminalCell()));
+            addItem(new Cell(x, ktR5 + j*kBox, kSquare, kSquare, 20 + j, i));
+                             //terminalCell()|(j == 4 ? centerCell() : 0)));
+            addItem(new Cell(x, ktR6 + j*kBox, kSquare, kSquare, 25 + j, i));
+                             //terminalCell()));
         }
     }
 
@@ -89,10 +89,11 @@ void Console::setWireColor(QColor color)
     wireColor = color;
 }
 
-void Console::setIC(QString name, int l)
+void Console::setIC(QString name, int l, std::vector<BlockData> blocks)
 {
     curICName = name;
     curICpins = l;
+    curICblocks = blocks;
 }
 
 int Console::getOffset(QPointF p)
@@ -183,7 +184,7 @@ void Console::cellMouseEvent(Cell *cell)
     {
         if (cell->isCenter())
         {
-            IC *ic = new IC(curICName, curICpins/2, mousePos);
+            IC *ic = new IC(curICName, curICpins/2, mousePos, cell->index(), curICblocks);
             Cell *cell;
             int freeCells = 0;
             addItem(ic);
@@ -252,10 +253,10 @@ typedef qint8 ItemType;
 
 namespace Item
 {
-const ItemType WIRE = 1;
-const ItemType IC   = 2;
-const ItemType LED  = 3;
-const ItemType END  = 99;
+    const ItemType WIRE = 1;
+    const ItemType IC   = 2;
+    const ItemType LED  = 3;
+    const ItemType END  = 99;
 }
 
 void Console::writeWire(QDataStream &out, const Wire &wire) const

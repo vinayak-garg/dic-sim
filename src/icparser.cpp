@@ -1397,7 +1397,7 @@ yyreduce:
 
 /* Line 1806 of yacc.c  */
 #line 52 "/home/vinayak/codes/qt/dic_sim/icd.y"
-    {blockdata.inPin.push_back(atoi(getTokenString()));}
+    {blockdata.outPin.push_back(atoi(getTokenString()));}
     break;
 
   case 11:
@@ -1411,7 +1411,7 @@ yyreduce:
 
 /* Line 1806 of yacc.c  */
 #line 65 "/home/vinayak/codes/qt/dic_sim/icd.y"
-    {blockdata.outPin.push_back(atoi(getTokenString()));}
+    {blockdata.inPin.push_back(atoi(getTokenString()));}
     break;
 
 

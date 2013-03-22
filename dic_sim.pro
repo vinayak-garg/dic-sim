@@ -58,4 +58,5 @@ HEADERS += \
     include/cell.h \
     include/breadboard.h \
     include/blockdata.h \
-    include/block.h
+    include/block.h \
+    include/constants.h
