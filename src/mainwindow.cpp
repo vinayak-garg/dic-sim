@@ -180,7 +180,7 @@ void MainWindow::actionOpen()
             return;
         }
         QDataStream in(&file);
-        in.setVersion(QDataStream::Qt_4_8);
+        in.setVersion(QDataStream::Qt_4_7);
 
         actionNew();
         in >> *console;
@@ -204,7 +204,7 @@ void MainWindow::actionSave()
             return;
         }
         QDataStream out(&file);
-        out.setVersion(QDataStream::Qt_4_8);
+        out.setVersion(QDataStream::Qt_4_7);
         out << *console;
     }
 }
