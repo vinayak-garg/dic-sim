@@ -30,12 +30,6 @@ void Console::togglePower()
 {
     power = !power;
     powerButton->set(power);
-    /*
-    if (power)
-        powerButton->setPixmap(QPixmap(":/button/main_on"));
-    else
-        powerButton->setPixmap(QPixmap(":/button/main_off"));
-        */
 }
 
 void Console::addBreadboard()
@@ -57,17 +51,11 @@ void Console::addBreadboard()
         for (j = 0; j < 5; ++j)
         {
             addItem(new Cell(x, ktR1 + j*kBox, kSquare, kSquare, j, i));
-                             //terminalCell()|(j == 4 ? centerCell() : 0)));
             addItem(new Cell(x, ktR2 + j*kBox, kSquare, kSquare, 5 + j, i));
-                             //terminalCell()));
             addItem(new Cell(x, ktR3 + j*kBox, kSquare, kSquare, 10 + j, i));
-                             //terminalCell()|(j == 4 ? centerCell() : 0)));
             addItem(new Cell(x, ktR4 + j*kBox, kSquare, kSquare, 15 + j, i));
-                             //terminalCell()));
             addItem(new Cell(x, ktR5 + j*kBox, kSquare, kSquare, 20 + j, i));
-                             //terminalCell()|(j == 4 ? centerCell() : 0)));
             addItem(new Cell(x, ktR6 + j*kBox, kSquare, kSquare, 25 + j, i));
-                             //terminalCell()));
         }
     }
 
@@ -125,7 +113,10 @@ void Console::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         if ((cellItem = dynamic_cast<Cell *>(*it)))
         {
-            cellMouseEvent(cellItem);
+            if (!power)
+                cellMouseEvent(cellItem);
+            else
+                QMessageBox::warning(0, "Error", "Cannot edit circuit while power is on.");
             break;
         }
         else if ((toggleButtonItem = dynamic_cast<ToggleButton *>(*it)))
