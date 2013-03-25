@@ -17,10 +17,10 @@ bool QuickUnion::join(int a, int b)
     if (a < 0 && b < 0) //Both HIGH/LOW (fixed) voltage
         return false;
 
-    if      (a == HIGH_OFFSET) _setFixedState(a, State::high);
-    else if (a == LOW_OFFSET ) _setFixedState(a, State::low);
-    else if (b == HIGH_OFFSET) _setFixedState(b, State::high);
-    else if (b == LOW_OFFSET ) _setFixedState(b, State::low);
+    if      (a == HIGH_OFFSET) _setFixedState(b, State::high);
+    else if (a == LOW_OFFSET ) _setFixedState(b, State::low);
+    else if (b == HIGH_OFFSET) _setFixedState(a, State::high);
+    else if (b == LOW_OFFSET ) _setFixedState(a, State::low);
     else
     {
         // a <-- b

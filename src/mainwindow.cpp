@@ -216,6 +216,7 @@ void MainWindow::actionRunCircuit()
         console->togglePower();
         circuit.reset(new Circuit(console));
         circuit->prepareConnections();
+        circuit->run();
         circuitState = true;
     }
 }

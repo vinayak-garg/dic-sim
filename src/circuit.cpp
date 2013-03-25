@@ -1,5 +1,7 @@
 #include "cell.h"
 #include "wire.h"
+#include "block.h"
+#include "state.h"
 #include "circuit.h"
 #include "breadboard.h"
 #include "quickunion.h"
@@ -14,7 +16,7 @@ const short kMaxTerminals = kCols*6
 const short INPUT_OFFSET = kCols*6;
 const short OUTPUT_OFFSET = INPUT_OFFSET + 10;
 
-Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
+Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals)
 {
     //terminals.setstate(HIGH_OFFSET, State::high);
     //terminals.setstate(LOW_OFFSET, State::low);
@@ -35,8 +37,8 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
     {
         if ((wire = dynamic_cast<Wire *>(*it)))
         {
-            i = console->getOffset(wire->line().p1());
-            j = console->getOffset(wire->line().p2());
+            i = _console->getOffset(wire->line().p1());
+            j = _console->getOffset(wire->line().p2());
             if (terminals.join(i, j))
             {
                 connections.push_back(Connection(i, j));
@@ -49,7 +51,7 @@ Circuit::Circuit(Console *console) : terminals(kMaxTerminals)
         else if ((led = dynamic_cast<LED *>(*it)))
         {
             ledList.push_back(led);
-            led->switchOn(POWER | STATE);
+            led->switchOn(POWER);
         }
         else if ((ic = dynamic_cast<IC *>(*it)))
         {
@@ -73,11 +75,11 @@ bool Circuit::prepareConnections()
         for (auto block : ic->blocks)
         {
             BlockData bd = block;
-            for (int i = 0; i < bd.inPin.size(); i++)
+            for (size_t i = 0; i < bd.inPin.size(); i++)
             {
                 bd.inPin[i] = mapICpinToCircuit(bd.inPin[i], l, index);
             }
-            for (int i = 0; i < bd.outPin.size(); i++)
+            for (size_t i = 0; i < bd.outPin.size(); i++)
             {
                 bd.outPin[i] = mapICpinToCircuit(bd.outPin[i], l, index);
             }
@@ -88,7 +90,7 @@ bool Circuit::prepareConnections()
     for (auto b : blocks)
     {
         std::cout << b.id << '\n';
-        for (int i = 0; i < b.inPin.size(); i++)
+        for (size_t i = 0; i < b.inPin.size(); i++)
             std::cout << b.inPin[i] << ' ';
         std::cout << std::endl;
     }
@@ -98,6 +100,43 @@ bool Circuit::prepareConnections()
 
 bool Circuit::run()
 {
+    using namespace Block;
+    std::vector<State> blockInput(MAX_INPUTS), blockOutput(MAX_OUTPUTS);
+    bool unsteady = true;
+
+    for (int max_iter = blocks.size(); max_iter && unsteady; max_iter--)
+    {
+        unsteady = false;
+        for (auto b : blocks)
+        {
+            //Create copy of input
+            for (size_t i = 0; i < b.inPin.size(); i++)
+                blockInput[i] = terminals.getstate(b.inPin[i]);
+
+            //Process!!
+            if (!process(b.id, blockInput, blockOutput))
+                unsteady = true;
+
+            //Set output
+            for (size_t i = 0; i < b.outPin.size(); i++)
+                terminals.setstate(b.outPin[i], blockOutput[i]);
+        }
+    }
+
+    for (auto led : ledList)
+    {
+        int i = console->getOffset(led->line().p1());
+        int j = console->getOffset(led->line().p2());
+        if (terminals.getstate(i) == State::undefined ||
+                terminals.getstate(j) == State::undefined)
+            //Raise error : TODO
+            led->switchOff(STATE);
+        else if (terminals.getstate(i) != terminals.getstate(j))
+            led->switchOn(STATE);
+        else
+            led->switchOff(STATE);
+    }
+
     return true;
 }
 

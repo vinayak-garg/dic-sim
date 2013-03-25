@@ -86,9 +86,9 @@ void Console::setIC(QString name, int l, std::vector<BlockData> blocks)
 
 int Console::getOffset(QPointF p)
 {
-    auto cellItems = this->items(p);
+    auto allItems = this->items(p);
     Cell *cell;
-    for (auto it = cellItems.begin(); it != cellItems.end(); it++)
+    for (auto it = allItems.begin(); it != allItems.end(); it++)
     {
         if ((cell = dynamic_cast<Cell *>(*it)))
         {

@@ -2,13 +2,12 @@
 
 #include <QtCore>
 
-std::map<std::string, int> Block::blockIDMap;
-
-Block::Block()
+namespace Block
 {
-}
 
-void Block::init()
+std::map<std::string, int> blockIDMap;
+
+void init()
 {
     int i = 1;
     blockIDMap["GND"]    = i++;
@@ -24,7 +23,14 @@ void Block::init()
     blockIDMap["OR3"]    = i++;
 }
 
-int Block::mapBlockID(std::string func)
+processFn blockFn[] = {
+    0,
+    &_nand2,
+    &_nand2,
+    &_nand2,
+};
+
+int mapBlockID(std::string func)
 {
     if (blockIDMap.count(func))
     {
@@ -36,3 +42,25 @@ int Block::mapBlockID(std::string func)
         return 0;
     }
 }
+
+bool process(int blockID, const States in, States out)
+{
+    return blockFn[blockID](in, out);
+}
+
+bool _nand2(const States in, States out)
+{
+    if (in[0] == State::low || in[1] == State::low)
+        out[0] = State::high;
+    else if (in[0] == State::undefined || in[1] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::low;
+
+    return true;
+}
+
+} //namespace Block

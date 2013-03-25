@@ -30,7 +30,10 @@ const int BUS_ROW_HIGH = 30;
 const int BUS_ROW_LOW = 31;
 const int BUS_COL = kCols + 10;
 
-const short HIGH_OFFSET = -1;
-const short LOW_OFFSET = -2;
+const int HIGH_OFFSET = -1;
+const int LOW_OFFSET = -2;
+
+const int MAX_INPUTS = 128;
+const int MAX_OUTPUTS = 128;
 
 #endif // CONSTANTS_H

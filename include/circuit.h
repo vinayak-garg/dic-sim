@@ -3,9 +3,9 @@
 
 #include "ic.h"
 #include "led.h"
-#include "breadboard.h"
-#include "blockdata.h"
 #include "console.h"
+#include "blockdata.h"
+#include "breadboard.h"
 #include "quickunion.h"
 
 #include <vector>
@@ -15,7 +15,7 @@ struct Connection;
 class Circuit
 {
 public:
-    Circuit(Console *console);
+    Circuit(Console *_console);
     bool prepareConnections();
     bool run();
     void stop();
@@ -29,6 +29,7 @@ protected:
     }
 
 private:
+    Console *console;
     std::vector<std::vector<BlockData> > *ICDataListPtr;
     QuickUnion terminals;
     std::vector<bool> usedTerminals;
