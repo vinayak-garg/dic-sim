@@ -18,7 +18,8 @@ RESOURCES += \
 
 OTHER_FILES += \
     icd.l \
-    icd.y
+    icd.y \
+    README.md
 
 SOURCES += \
     src/wire.cpp \
