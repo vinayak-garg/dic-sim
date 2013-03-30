@@ -9,6 +9,6 @@ Depends On:
  - Qt 4.7
  - Flex and Bison
 
-[Inspiration](http://i.imgur.com/MCNHALY)
+[Inspiration](http://i.imgur.com/MCNHALY.jpg)
 
-[Development Screenshot](http://i.imgur.com/E4RrZJ0)
+[Development Screenshot](http://i.imgur.com/E4RrZJ0.png)
