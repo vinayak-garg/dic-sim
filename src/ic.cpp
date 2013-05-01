@@ -12,6 +12,13 @@ IC::IC(QString _name, int _l, QPointF _pos, int _index,
     setZValue(-1);
 }
 
+IC::IC(QString _name, int _l, qreal _x, qreal _y, int _index,
+       std::vector<BlockData> _blocks) :
+    name(_name), l(_l), x(_x), y(_y), blocks(_blocks), index(_index)
+{
+    setZValue(-1);
+}
+
 QRectF IC::boundingRect() const
 {
     return QRectF(x - 1, y - 1, l*kBox + 1, 2*(kBox + kPinHeight) + 1);

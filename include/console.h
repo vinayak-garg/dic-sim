@@ -16,6 +16,8 @@ enum class Mode : qint8
     inserting_ic
 };
 
+class IC;
+
 class Console : public QGraphicsScene
 {
     Q_OBJECT
@@ -54,6 +56,8 @@ private:
     void readWire(QDataStream &in);
     void writeLED(QDataStream &out, const LED &led) const;
     void readLED(QDataStream &in);
+    void writeIC(QDataStream &out, const IC &ic) const;
+    void readIC(QDataStream &in);
 
     bool isFirstPoint;
     Mode mode;

@@ -110,8 +110,8 @@ bool _and_2(const States in, States out)
     return false;
 }
 
-/*
-bool nand3(State* s)
+
+bool _nand_3(const States in, States out)
 {
     if (in[0] == State::low || in[1] == State::low || in[2] == State::low)
         out[0] = State::high;
@@ -125,7 +125,7 @@ bool nand3(State* s)
     return true;
 }
 
-
+/*
 bool nor3(State* s)
 {
     if (in[0] == State::high || in[1] == State::high || in[2] == State::high)

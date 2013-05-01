@@ -313,17 +313,73 @@ void Console::readLED(QDataStream &in)
     addItem(new LED(line.p1(), line.p2()));
 }
 
+void Console::writeIC(QDataStream &out, const IC &ic) const
+{
+    out << Item::IC;
+
+    out << ic.name << ic.l << ic.index << ic.x << ic.y;
+    out << (qint32)ic.blocks.size();
+    for (auto block : ic.blocks)
+    {
+        out << block.id;
+        out << (qint32)block.inPin.size();
+        for (auto pin : block.inPin)
+            out << pin;
+        out << (qint32)block.outPin.size();
+        for (auto pin : block.outPin)
+            out << pin;
+    }
+}
+
+void Console::readIC(QDataStream &in)
+{
+    int l, index, val;
+    QString name;
+    qreal x, y;
+    in >> name >> l >> index >> x >> y;
+
+    std::vector<BlockData> blocks;
+    BlockData block;
+    qint32 size1, size2;
+    in >> size1;
+    for (int i = 0; i < size1; i++)
+    {
+        in >> block.id;
+        in >> size2;
+        for (int j = 0; j < size2; j++)
+        {
+            in >> val;
+            block.inPin.push_back(val);
+        }
+        in >> size2;
+        block.outPin.reserve(size2);
+        for (int j = 0; j < size2; j++)
+        {
+            in >> val;
+            block.outPin.push_back(val);
+        }
+        blocks.push_back(block);
+        block.inPin.clear();
+        block.outPin.clear();
+    }
+
+    addItem(new IC(name, l, x, y, index, blocks));
+}
+
 QDataStream &operator<<(QDataStream &out, const Console &console)
 {
     auto items = console.items();
     Wire *wire;
     LED *led;
+    IC *ic;
     foreach (QGraphicsItem *item, items)
     {
         if ((wire = dynamic_cast<Wire *>(item)))
             console.writeWire(out, *wire);
         else if ((led = dynamic_cast<LED *>(item)))
             console.writeLED(out, *led);
+        else if ((ic = dynamic_cast<IC *>(item)))
+            console.writeIC(out, *ic);
     }
     out << Item::END;
 
@@ -344,6 +400,8 @@ QDataStream &operator>>(QDataStream &in, Console &console)
         case Item::LED:
             console.readLED(in);
             break;
+        case Item::IC:
+            console.readIC(in);
         }
 
         in >> it;
