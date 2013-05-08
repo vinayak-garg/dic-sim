@@ -3,8 +3,8 @@
 
 #include <QtGui>
 
-const int8_t STATE = 1;
-const int8_t POWER = 2;
+const int STATE = 1;
+const int POWER = 2;
 
 class LED : public QGraphicsItem
 {
@@ -30,12 +30,12 @@ public:
     static bool validDistance(QPointF p1, QPointF p2);
 
 public slots:
-    void switchOn(int8_t SorP = STATE)
+    void switchOn(int SorP = STATE)
     {
         state |= SorP;
         update();
     }
-    void switchOff(int8_t SorP = STATE)
+    void switchOff(int SorP = STATE)
     {
         state &= ~SorP;
         update();
@@ -43,7 +43,7 @@ public slots:
 
 private:
     qreal x1, y1, x2, y2, x, y, w, h;
-    int8_t state;
+    int state;
     static QPixmap *led_on, *led_off;
 };
 

@@ -4,24 +4,11 @@
 #include "constants.h"
 
 #include <QtGui>
-/*
-constexpr int terminalCell()
-{
-    return 1 << 16;
-}
-constexpr int highVoltageCell()
-{
-    return 1 << 17;
-}
-constexpr int centerCell()
-{
-    return 1 << 18;
-}
-*/
+
 class Cell : public QGraphicsRectItem
 {
 public:
-    Cell(qreal x, qreal y, qreal w, qreal h, int8_t r, int8_t c, int _id = 0);
+    Cell(qreal x, qreal y, qreal w, qreal h, int r, int c, int _id = 0);
     void occupy()
     {
         occupied = true;
@@ -41,7 +28,6 @@ public:
     bool isCenter()
     {
         return ((m_r+1)%5 == 0 && (m_r+1)%10); //true for 4, 14, 24
-        //return id & centerCell();
     }
     int index()
     {
@@ -76,7 +62,6 @@ protected:
             setBrush(cellColor);
         update();
     }
-    //void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     static QColor cellColor;
@@ -84,7 +69,7 @@ private:
     static QColor occupiedCellColor;
     static QColor occupiedHighlightColor;
     bool occupied;
-    int8_t m_r, m_c;
+    int m_r, m_c;
     const int id;
 };
 

@@ -5,7 +5,7 @@ QColor Cell::highlightColor;
 QColor Cell::occupiedCellColor;
 QColor Cell::occupiedHighlightColor;
 
-Cell::Cell(qreal x, qreal y, qreal w, qreal h, int8_t r, int8_t c, int _id)
+Cell::Cell(qreal x, qreal y, qreal w, qreal h, int r, int c, int _id)
     : QGraphicsRectItem(0, 0, w, h), m_r(r), m_c(c), id(_id)
 {
     setAcceptHoverEvents(true);
@@ -22,9 +22,3 @@ void Cell::initCell()
     occupiedCellColor.setRgb(105, 105, 105);
     occupiedHighlightColor.setRgb(240, 0, 0);
 }
-/*
-void Cell::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    QMessageBox::information(0, "You clicked!", "Oh my god you clicked!");
-}
-*/
