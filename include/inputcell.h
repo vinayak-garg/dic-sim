@@ -1,14 +1,14 @@
-#ifndef CELL_H
-#define CELL_H
+#ifndef INPUTCELL_H
+#define INPUTCELL_H
 
 #include "constants.h"
 
 #include <QtGui>
 
-class Cell : public QGraphicsRectItem
+class InputCell : public QGraphicsEllipseItem
 {
 public:
-    Cell(qreal x, qreal y, qreal w, qreal h, int r, int c);
+    InputCell(qreal x, qreal y, qreal w, qreal h, int r, int c);
     void occupy()
     {
         occupied = true;
@@ -43,7 +43,7 @@ public:
         return m_c;
     }
 
-    static void initCell();
+    static void init();
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *)
@@ -72,4 +72,4 @@ private:
     int m_r, m_c;
 };
 
-#endif // CELL_H
+#endif // INPUTCELL_H

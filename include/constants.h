@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const int kTop = 50;
+const int kTop = 60;
 const int kLeft = 30;
 const int kWidth = 620;
 const int kHeight = 480;

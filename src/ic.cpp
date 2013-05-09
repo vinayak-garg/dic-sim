@@ -5,7 +5,7 @@ static const int kPinHeight = 4;
 
 IC::IC(QString _name, int _l, QPointF _pos, int _index,
        std::vector<BlockData> _blocks) :
-    name(_name), blocks(_blocks), l(_l), index(_index)
+    blocks(_blocks), name(_name), l(_l), index(_index)
 {
     x = _pos.x() - 4;
     y = _pos.y();
@@ -14,7 +14,7 @@ IC::IC(QString _name, int _l, QPointF _pos, int _index,
 
 IC::IC(QString _name, int _l, qreal _x, qreal _y, int _index,
        std::vector<BlockData> _blocks) :
-    name(_name), x(_x), y(_y), blocks(_blocks), l(_l), index(_index)
+    blocks(_blocks), name(_name), x(_x), y(_y), l(_l), index(_index)
 {
     setZValue(-1);
 }

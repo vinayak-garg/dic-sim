@@ -38,7 +38,8 @@ SOURCES += \
     src/circuit.cpp \
     src/cell.cpp \
     src/breadboard.cpp \
-    src/block.cpp
+    src/block.cpp \
+    include/inputcell.cpp
 
 HEADERS += \
     include/wire.h \
@@ -60,4 +61,5 @@ HEADERS += \
     include/breadboard.h \
     include/blockdata.h \
     include/block.h \
-    include/constants.h
+    include/constants.h \
+    include/inputcell.h

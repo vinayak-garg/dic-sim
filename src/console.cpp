@@ -1,4 +1,6 @@
 #include "breadboard.h"
+#include "inputcell.h"
+#include "constants.h"
 #include "console.h"
 #include "cell.h"
 #include "wire.h"
@@ -22,7 +24,8 @@ Console::Console(QWidget *parent) :
 
     for (int i = 0; i < 10; i++)
     {
-        addItem(new ToggleButton(20 + i*70, 570));
+        addItem(new ToggleButton(20 + i*70, 580));
+        addItem(new InputCell(30 + i*70, 560, 10, 10, 0, 0));
     }
 }
 

@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "led.h"
 #include "cell.h"
+#include "inputcell.h"
 #include "powerbutton.h"
 #include "togglebutton.h"
 #include "block.h"
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
 
     LED::initLed();
     Cell::initCell();
+    InputCell::init();
     PowerButton::init();
     ToggleButton::initToggleButton();
     Block::init();

@@ -184,6 +184,7 @@ void MainWindow::actionOpen()
 
         actionNew();
         in >> *console;
+        connect(console, SIGNAL(powerToggled()), this, SLOT(circuitPowerToggled()));
     }
 }
 

@@ -5,8 +5,8 @@ QColor Cell::highlightColor;
 QColor Cell::occupiedCellColor;
 QColor Cell::occupiedHighlightColor;
 
-Cell::Cell(qreal x, qreal y, qreal w, qreal h, int r, int c, int _id)
-    : QGraphicsRectItem(0, 0, w, h), m_r(r), m_c(c), id(_id)
+Cell::Cell(qreal x, qreal y, qreal w, qreal h, int r, int c)
+    : QGraphicsRectItem(0, 0, w, h), m_r(r), m_c(c)
 {
     setAcceptHoverEvents(true);
     setBrush(cellColor);
