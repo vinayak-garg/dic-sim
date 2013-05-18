@@ -17,7 +17,7 @@ InputCell::InputCell(qreal x, qreal y, qreal w, qreal h, int r, int c)
 
 void InputCell::init()
 {
-    cellColor.setRgb(90, 90, 90);
+    cellColor.setRgb(120, 120, 120);
     highlightColor.setRgb(0, 210, 0);
     occupiedCellColor.setRgb(105, 105, 105);
     occupiedHighlightColor.setRgb(240, 0, 0);

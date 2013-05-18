@@ -3,6 +3,7 @@
 #include "block.h"
 #include "state.h"
 #include "circuit.h"
+#include "constants.h"
 #include "breadboard.h"
 #include "quickunion.h"
 
@@ -10,14 +11,9 @@
 
 #include <bitset>
 
-const short kMaxTerminals = kCols*6
-        + 10 /* Input points */
-        + 10 /* Output points */;
-const short INPUT_OFFSET = kCols*6;
-const short OUTPUT_OFFSET = INPUT_OFFSET + 10;
-
 Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals)
 {
+    /*
     //terminals.setstate(HIGH_OFFSET, State::high);
     //terminals.setstate(LOW_OFFSET, State::low);
     for (int i = 0; i < 10; i++)
@@ -25,6 +21,7 @@ Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals
         terminals.setstate(INPUT_OFFSET + i, State::low);
         terminals.setstate(OUTPUT_OFFSET + i, State::low);
     }
+    */
 
     QList<QGraphicsItem *> items = console->items();
 
@@ -43,7 +40,6 @@ Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals
             {
                 connections.push_back(Connection(i, j));
                 wire->markRedundent(false);
-                //usedTerminals[i]
             }
             else
                 wire->markRedundent(true);
@@ -98,11 +94,17 @@ bool Circuit::prepareConnections()
     return true;
 }
 
-bool Circuit::run()
+bool Circuit::run(std::vector<State> inputStates)
 {
     using namespace Block;
     std::vector<State> blockInput(MAX_INPUTS), blockOutput(MAX_OUTPUTS);
     bool unsteady = true;
+
+    //Set Toggle Buttons State
+    for (size_t i = 0; i < inputStates.size(); i++)
+    {
+        terminals.setstate(INPUT_OFFSET + i, inputStates[i]);
+    }
 
     for (int max_iter = blocks.size(); max_iter && unsteady; max_iter--)
     {

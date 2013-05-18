@@ -19,7 +19,8 @@ public:
     }
     void setstate(int a, State s)
     {
-        state[a] = s;
+        //state[a] = s;
+        _setFixedState(a, s);
     }
     void print();
 

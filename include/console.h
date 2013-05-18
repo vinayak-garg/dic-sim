@@ -5,11 +5,13 @@
 #include "led.h"
 #include "wire.h"
 #include "cell.h"
+#include "state.h"
+#include "inputcell.h"
 #include "powerbutton.h"
 #include "togglebutton.h"
 #include <QtGui>
 
-enum class Mode : qint8
+enum Mode
 {
     inserting_wire,
     inserting_led,
@@ -34,8 +36,11 @@ public:
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;
 
+    std::vector<State> toggleInputStates;
+
 signals:
     void powerToggled();
+    void inputToggled();
 
 public slots:
     void setMode(Mode _mode)
@@ -49,6 +54,7 @@ protected:
     void addBreadboard();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void cellMouseEvent(Cell* cell);
+    void inputCellMouseEvent(InputCell *cell);
     void togglebuttonMouseEvent(ToggleButton* toggleButton);
 
 private:
@@ -64,6 +70,7 @@ private:
 
     QPointF lastMousePos;
     Cell *lastCell;
+    InputCell *lastInputCell;
 
     QString curICName;
     int curICpins;

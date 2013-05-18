@@ -29,6 +29,7 @@ processFn blockFn[] = {
     &_vcc,
     &_nand_2,
     &_nor_2,
+    &_and_2,
 };
 
 int mapBlockID(std::string func)

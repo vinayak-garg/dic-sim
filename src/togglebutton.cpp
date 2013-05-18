@@ -5,7 +5,7 @@
 QPixmap* ToggleButton::img_off;
 QPixmap* ToggleButton::img_on;
 
-ToggleButton::ToggleButton(qreal _x, qreal _y) :x(_x), y(_y)
+ToggleButton::ToggleButton(qreal _x, qreal _y, int _id) : id(_id), x(_x), y(_y)
 {
     state = false;
 }
@@ -28,15 +28,3 @@ void ToggleButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     Q_UNUSED(widget);
     painter->drawPixmap(x, y, isOn() ? *img_on : *img_off);
 }
-
-/*
-void ToggleButton::mousePressEvent(QMouseEvent *ev)
-{
-    state = !state;
-    if (state)
-        setPixmap(*button_on);
-    else
-        setPixmap(*button_off);
-    emit clicked();
-}
-*/

@@ -1,9 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <cstdint>
-
-enum class State : int8_t
+enum class State
 {
     undefined,
     low,

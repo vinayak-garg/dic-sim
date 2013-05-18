@@ -11,7 +11,8 @@
 #include <QDebug>
 
 Console::Console(QWidget *parent) :
-    QGraphicsScene(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, parent)
+    QGraphicsScene(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, parent),
+    toggleInputStates(10)
 {
     powerButton = new PowerButton(780, 20);
     addItem(powerButton);
@@ -19,13 +20,19 @@ Console::Console(QWidget *parent) :
 
     mode = Mode::inserting_wire;
     isFirstPoint = true;
+    lastCell = nullptr;
+    lastInputCell = nullptr;
 
     addBreadboard();
 
     for (int i = 0; i < 10; i++)
     {
-        addItem(new ToggleButton(20 + i*70, 580));
-        addItem(new InputCell(30 + i*70, 560, 10, 10, 0, 0));
+        addItem(new LED(QPointF(35 + i*70, 30), QPointF(35 + i*70, 30)));
+        addItem(new InputCell(30 + i*70, 50, 8, 8, 0, i));
+        addItem(new InputCell(30 + i*70, 570, 8, 8, 0, i));
+        addItem(new ToggleButton(20 + i*70, 590, i));
+
+        toggleInputStates[i] = State::low;
     }
 }
 
@@ -91,6 +98,7 @@ int Console::getOffset(QPointF p)
 {
     auto allItems = this->items(p);
     Cell *cell;
+    InputCell *inputCell;
     for (auto it = allItems.begin(); it != allItems.end(); it++)
     {
         if ((cell = dynamic_cast<Cell *>(*it)))
@@ -102,6 +110,10 @@ int Console::getOffset(QPointF p)
             else
                 return (cell->row()/5)*kCols + cell->col();
         }
+        else if ((inputCell = dynamic_cast<InputCell *>(*it)))
+        {
+            return INPUT_OFFSET + inputCell->col();
+        }
     }
     return -1;
 }
@@ -110,6 +122,7 @@ void Console::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QList<QGraphicsItem *> topItemsList = items(event->scenePos());
     Cell *cellItem = nullptr;
+    InputCell *inputCellItem = nullptr;
     ToggleButton *toggleButtonItem = nullptr;
 
     for (auto it = topItemsList.begin(); it != topItemsList.end(); it++)
@@ -122,9 +135,18 @@ void Console::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 QMessageBox::warning(0, "Error", "Cannot edit circuit while power is on.");
             break;
         }
+        else if ((inputCellItem = dynamic_cast<InputCell *>(*it)))
+        {
+            if (!power)
+                inputCellMouseEvent(inputCellItem);
+            else
+                QMessageBox::warning(0, "Error", "Cannot edit circuit while power is on.");
+            break;
+        }
         else if ((toggleButtonItem = dynamic_cast<ToggleButton *>(*it)))
         {
             togglebuttonMouseEvent(toggleButtonItem);
+            emit inputToggled();
             break;
         }
         else if (dynamic_cast<PowerButton *>(*it))
@@ -159,6 +181,7 @@ void Console::cellMouseEvent(Cell *cell)
                             lastMousePos = line.p1();
                         removeItem(wire);
                         cell->unoccupy();
+                        lastInputCell = nullptr;
                         isFirstPoint = false;
                     }
                 }
@@ -210,6 +233,7 @@ void Console::cellMouseEvent(Cell *cell)
         cell->occupy();
         lastMousePos = mousePos;
         lastCell = cell;
+        lastInputCell = nullptr;
     }
     else
     {
@@ -235,12 +259,76 @@ void Console::cellMouseEvent(Cell *cell)
     isFirstPoint = !isFirstPoint;
 }
 
+void Console::inputCellMouseEvent(InputCell *cell)
+{
+    if (mode == Mode::inserting_led || mode == Mode::inserting_ic)
+    {
+        return;
+    }
+
+    QPointF mousePos(cell->scenePos().x() + (kSquare>>1),
+                     cell->pos().y() + (kSquare>>1));
+
+    if (cell->isOccupied())
+    {
+        if (isFirstPoint)
+        {
+            auto collItems = cell->collidingItems();
+            for (auto it = collItems.begin(); it != collItems.end(); it++)
+            {
+                Wire *wire;
+                if ((wire = dynamic_cast<Wire *>(*it)))
+                {
+                    QLineF line = wire->line();
+                    if (line.p1() == mousePos)
+                        lastMousePos = line.p2();
+                    else
+                        lastMousePos = line.p1();
+                    removeItem(wire);
+                    cell->unoccupy();
+                    isFirstPoint = false;
+                }
+            }
+        }
+        else if (mousePos == lastMousePos)
+        {
+            cell->unoccupy();
+            isFirstPoint = true;
+        }
+        return;
+    }
+
+    cell->setBrush(Qt::yellow);
+
+    if (isFirstPoint)
+    {
+        cell->occupy();
+        lastMousePos = mousePos;
+        lastCell = nullptr;
+        lastInputCell = cell;
+    }
+    else
+    {
+        if (lastInputCell != nullptr)
+            return;
+        cell->occupy();
+        addItem(new Wire(lastMousePos, mousePos, wireColor));
+    }
+    isFirstPoint = !isFirstPoint;
+}
+
 void Console::togglebuttonMouseEvent(ToggleButton *toggleButton)
 {
     if (toggleButton->isOn())
+    {
         toggleButton->set(false);
+        toggleInputStates[toggleButton->id] = State::low;
+    }
     else
+    {
         toggleButton->set(true);
+        toggleInputStates[toggleButton->id] = State::high;
+    }
 }
 
 typedef qint8 ItemType;
@@ -256,13 +344,10 @@ namespace Item
 void Console::writeWire(QDataStream &out, const Wire &wire) const
 {
     out << Item::WIRE;
-    //qDebug() << Item::WIRE;
     QLineF line = wire.line();
     out << line.p1().x() << line.p1().y() << line.p2().x() << line.p2().y();
-    //qDebug() << line.p1().x() << line.p1().y() << line.p2().x() << line.p2().y();
     QColor col = wire.pen().color();
     out << col.red() << col.green() << col.blue();
-    //qDebug() << col.red() << col.green() << col.blue();
 }
 
 void Console::readWire(QDataStream &in)
@@ -280,12 +365,10 @@ void Console::readWire(QDataStream &in)
     item = this->itemAt(x2, y2);
     if ((cell = dynamic_cast<Cell *>(item)))
         cell->occupy();
-    //qDebug() << line.p1().x() << line.p1().y() << line.p2().x() << line.p2().y();
 
     int r, g, b;
     in >> r >> g >> b;
     col.setRgb(r, g, b);
-    //qDebug() << col.red() << col.green() << col.blue();
 
     addItem(new Wire(line.p1(), line.p2(), col));
 }

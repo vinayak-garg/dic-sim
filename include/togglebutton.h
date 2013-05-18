@@ -6,7 +6,7 @@
 class ToggleButton : public QGraphicsItem
 {
 public:
-    explicit ToggleButton(qreal _x, qreal _y);
+    explicit ToggleButton(qreal _x, qreal _y, int _id);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -24,11 +24,7 @@ public:
         return state;
     }
     static void initToggleButton();
-
-protected:
-//    void mousePressEvent(QMouseEvent *ev);
-
-public slots:
+    int id;
 
 private:
     qreal x, y;

@@ -3,6 +3,7 @@
 
 #include "ic.h"
 #include "led.h"
+#include "state.h"
 #include "console.h"
 #include "blockdata.h"
 #include "breadboard.h"
@@ -17,7 +18,7 @@ class Circuit
 public:
     Circuit(Console *_console);
     bool prepareConnections();
-    bool run();
+    bool run(std::vector<State> inputStates);
     void stop();
 protected:
     int mapICpinToCircuit(int pin, int l, int topleftindex)

@@ -118,11 +118,10 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *centralWidget = new QWidget;
     centralWidget->setObjectName(QObject::tr("centralWidget"));
 
-    console = new Console;
-    console->setObjectName(QObject::tr("console"));
-    consoleView = new QGraphicsView(console);
+    console = nullptr;
+    consoleView = new QGraphicsView();
     consoleView->setFixedSize(Console::CONSOLE_WIDTH, Console::CONSOLE_HEIGHT);
-    connect(console, SIGNAL(powerToggled()), this, SLOT(circuitPowerToggled()));
+    actionNew();
 
     QVBoxLayout *vLayout = new QVBoxLayout;
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -163,6 +162,9 @@ void MainWindow::actionNew()
     console = new Console;
     console->setObjectName(QObject::tr("console"));
     consoleView->setScene(console);
+
+    connect(console, SIGNAL(powerToggled()), this, SLOT(consolePowerToggled()));
+    connect(console, SIGNAL(inputToggled()), this, SLOT(consoleInputToggled()));
 }
 
 void MainWindow::actionOpen()
@@ -184,7 +186,6 @@ void MainWindow::actionOpen()
 
         actionNew();
         in >> *console;
-        connect(console, SIGNAL(powerToggled()), this, SLOT(circuitPowerToggled()));
     }
 }
 
@@ -217,7 +218,7 @@ void MainWindow::actionRunCircuit()
         console->togglePower();
         circuit.reset(new Circuit(console));
         circuit->prepareConnections();
-        circuit->run();
+        circuit->run(console->toggleInputStates);
         circuitState = true;
     }
 }
@@ -262,12 +263,23 @@ void MainWindow::actionInsertIC()
     }
 }
 
-void MainWindow::circuitPowerToggled()
+void MainWindow::consolePowerToggled()
 {
     if (circuitState) //Circuit Running
         actionStopCircuit();
     else
         actionRunCircuit();
+}
+
+void MainWindow::consoleInputToggled()
+{
+    if (circuitState)
+    {
+        circuit->stop();
+        circuit.reset(new Circuit(console));
+        circuit->prepareConnections();
+        circuit->run(console->toggleInputStates);
+    }
 }
 
 void MainWindow::parseICs()
