@@ -32,6 +32,7 @@ public:
     void setIC(QString name, int l, std::vector<BlockData> blocks);
     int getOffset(QPointF p);
     void togglePower();
+    void toggleInput(int i);
 
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;

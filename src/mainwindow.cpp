@@ -114,6 +114,30 @@ MainWindow::MainWindow(QWidget *parent)
     helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(aboutAction);
 
+    /*
+     * Invisible Actions
+     */
+    QShortcut *toggleInput1 = new QShortcut(QKeySequence(tr("Alt+1")), this);
+    QShortcut *toggleInput2 = new QShortcut(QKeySequence(tr("Alt+2")), this);
+    QShortcut *toggleInput3 = new QShortcut(QKeySequence(tr("Alt+3")), this);
+    QShortcut *toggleInput4 = new QShortcut(QKeySequence(tr("Alt+4")), this);
+    QShortcut *toggleInput5 = new QShortcut(QKeySequence(tr("Alt+5")), this);
+    QShortcut *toggleInput6 = new QShortcut(QKeySequence(tr("Alt+6")), this);
+    QShortcut *toggleInput7 = new QShortcut(QKeySequence(tr("Alt+7")), this);
+    QShortcut *toggleInput8 = new QShortcut(QKeySequence(tr("Alt+8")), this);
+    QShortcut *toggleInput9 = new QShortcut(QKeySequence(tr("Alt+9")), this);
+    QShortcut *toggleInput0 = new QShortcut(QKeySequence(tr("Alt+0")), this);
+    connect(toggleInput1, SIGNAL(activated()), this, SLOT(actionToggleInput1()));
+    connect(toggleInput2, SIGNAL(activated()), this, SLOT(actionToggleInput2()));
+    connect(toggleInput3, SIGNAL(activated()), this, SLOT(actionToggleInput3()));
+    connect(toggleInput4, SIGNAL(activated()), this, SLOT(actionToggleInput4()));
+    connect(toggleInput5, SIGNAL(activated()), this, SLOT(actionToggleInput5()));
+    connect(toggleInput6, SIGNAL(activated()), this, SLOT(actionToggleInput6()));
+    connect(toggleInput7, SIGNAL(activated()), this, SLOT(actionToggleInput7()));
+    connect(toggleInput8, SIGNAL(activated()), this, SLOT(actionToggleInput8()));
+    connect(toggleInput9, SIGNAL(activated()), this, SLOT(actionToggleInput9()));
+    connect(toggleInput0, SIGNAL(activated()), this, SLOT(actionToggleInput0()));
+
     /*************** Central Contents ***************/
     QWidget *centralWidget = new QWidget;
     centralWidget->setObjectName(QObject::tr("centralWidget"));

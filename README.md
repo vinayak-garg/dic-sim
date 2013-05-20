@@ -9,6 +9,8 @@ Depends On:
  - Qt 4.8.1
  - Flex and Bison
 
+##Inspiration
 ![Inspiration](http://i.imgur.com/MCNHALY.jpg)
 
+##Development Screenshot
 ![Development Screenshot](http://i.imgur.com/E4RrZJ0.png)

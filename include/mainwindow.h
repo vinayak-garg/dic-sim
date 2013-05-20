@@ -34,6 +34,21 @@ public slots:
         console->setMode(Mode::inserting_led);
     }
     void actionInsertIC();
+    void actionToggleInput(int i)
+    {
+        console->toggleInput(i);
+        consoleInputToggled();
+    }
+    void actionToggleInput1() {actionToggleInput(0);}
+    void actionToggleInput2() {actionToggleInput(1);}
+    void actionToggleInput3() {actionToggleInput(2);}
+    void actionToggleInput4() {actionToggleInput(3);}
+    void actionToggleInput5() {actionToggleInput(4);}
+    void actionToggleInput6() {actionToggleInput(5);}
+    void actionToggleInput7() {actionToggleInput(6);}
+    void actionToggleInput8() {actionToggleInput(7);}
+    void actionToggleInput9() {actionToggleInput(8);}
+    void actionToggleInput0() {actionToggleInput(9);}
 
     void consolePowerToggled();
     void consoleInputToggled();

@@ -30,7 +30,8 @@ Console::Console(QWidget *parent) :
         addItem(new LED(QPointF(35 + i*70, 30), QPointF(35 + i*70, 30)));
         addItem(new InputCell(30 + i*70, 50, 8, 8, 0, i));
         addItem(new InputCell(30 + i*70, 570, 8, 8, 0, i));
-        addItem(new ToggleButton(20 + i*70, 590, i));
+        toggleButtons.append(new ToggleButton(20 + i*70, 590, i));
+        addItem(toggleButtons.back());
 
         toggleInputStates[i] = State::low;
     }
@@ -40,6 +41,11 @@ void Console::togglePower()
 {
     power = !power;
     powerButton->set(power);
+}
+
+void Console::toggleInput(int i)
+{
+    togglebuttonMouseEvent(toggleButtons[i]);
 }
 
 void Console::addBreadboard()
