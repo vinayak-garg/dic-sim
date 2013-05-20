@@ -27,11 +27,12 @@ Console::Console(QWidget *parent) :
 
     for (int i = 0; i < 10; i++)
     {
-        addItem(new LED(QPointF(35 + i*70, 30), QPointF(35 + i*70, 30)));
-        addItem(new InputCell(30 + i*70, 50, 8, 8, 0, i));
-        addItem(new InputCell(30 + i*70, 570, 8, 8, 0, i));
+        addItem(new LED(QPointF(35 + i*70, 30), QPointF(35 + i*70, 30), i));
+        addItem(new InputCell(30 + i*70, 50, 8, 8, 0, OUTPUT_OFFSET + i));
+
         toggleButtons.append(new ToggleButton(20 + i*70, 590, i));
         addItem(toggleButtons.back());
+        addItem(new InputCell(30 + i*70, 570, 8, 8, 0, INPUT_OFFSET + i));
 
         toggleInputStates[i] = State::low;
     }
@@ -118,7 +119,7 @@ int Console::getOffset(QPointF p)
         }
         else if ((inputCell = dynamic_cast<InputCell *>(*it)))
         {
-            return INPUT_OFFSET + inputCell->col();
+            return inputCell->col();
         }
     }
     return -1;
@@ -381,6 +382,8 @@ void Console::readWire(QDataStream &in)
 
 void Console::writeLED(QDataStream &out, const LED &led) const
 {
+    if (led.col >= 0 && led.col < 10)
+        return;
     out << Item::LED;
 
     QLineF line = led.line();

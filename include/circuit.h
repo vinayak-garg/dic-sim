@@ -38,6 +38,7 @@ private:
     std::vector<LED *> ledList;
     std::vector<IC *> icList;
     std::vector<BlockData> blocks;
+    std::vector<LED *> outLedList;
 };
 
 struct Connection

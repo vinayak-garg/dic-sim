@@ -11,18 +11,9 @@
 
 #include <bitset>
 
-Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals)
+Circuit::Circuit(Console *_console) : console(_console),
+    terminals(kMaxTerminals + 10), outLedList(10)
 {
-    /*
-    //terminals.setstate(HIGH_OFFSET, State::high);
-    //terminals.setstate(LOW_OFFSET, State::low);
-    for (int i = 0; i < 10; i++)
-    {
-        terminals.setstate(INPUT_OFFSET + i, State::low);
-        terminals.setstate(OUTPUT_OFFSET + i, State::low);
-    }
-    */
-
     QList<QGraphicsItem *> items = console->items();
 
     Wire *wire;
@@ -46,7 +37,10 @@ Circuit::Circuit(Console *_console) : console(_console), terminals(kMaxTerminals
         }
         else if ((led = dynamic_cast<LED *>(*it)))
         {
-            ledList.push_back(led);
+            if (led->col >= 0 && led->col < 10)
+                outLedList[led->col] = led;
+            else
+                ledList.push_back(led);
             led->switchOn(POWER);
         }
         else if ((ic = dynamic_cast<IC *>(*it)))
@@ -104,6 +98,7 @@ bool Circuit::run(std::vector<State> inputStates)
     for (size_t i = 0; i < inputStates.size(); i++)
     {
         terminals.setstate(INPUT_OFFSET + i, inputStates[i]);
+        terminals.setstate(OUTPUT_OFFSET + i, State::undefined);
     }
 
     for (int max_iter = blocks.size(); max_iter && unsteady; max_iter--)
@@ -139,12 +134,24 @@ bool Circuit::run(std::vector<State> inputStates)
             led->switchOff(STATE);
     }
 
+    for (size_t i = 0; i < outLedList.size(); i++)
+    {
+        if (terminals.getstate(OUTPUT_OFFSET+i) == State::high)
+            outLedList[i]->switchOn(STATE);
+        else
+            outLedList[i]->switchOff(STATE);
+    }
+
     return true;
 }
 
 void Circuit::stop()
 {
     for (auto led : ledList)
+    {
+        led->switchOff(POWER);
+    }
+    for (auto led : outLedList)
     {
         led->switchOff(POWER);
     }

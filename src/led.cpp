@@ -5,10 +5,11 @@
 QPixmap* LED::led_on;
 QPixmap* LED::led_off;
 
-LED::LED(QPointF p1, QPointF p2)
+LED::LED(QPointF p1, QPointF p2, int _col)
 {
     set(p1.x(), p1.y(), p2.x(), p2.y());
     switchOff(STATE);
+    col = _col;
 }
 
 void LED::set(qreal _x1, qreal _y1, qreal _x2, qreal _y2)

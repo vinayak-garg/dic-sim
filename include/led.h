@@ -9,7 +9,7 @@ const int POWER = 2;
 class LED : public QGraphicsItem
 {
 public:
-    explicit LED(QPointF p1, QPointF p2);
+    explicit LED(QPointF p1, QPointF p2, int _col = -1);
     void set(qreal _x1, qreal _y1, qreal _x2, qreal _y2);
 
     QRectF boundingRect() const;
@@ -28,6 +28,7 @@ public:
 
     static void initLed();
     static bool validDistance(QPointF p1, QPointF p2);
+    int col;
 
 public slots:
     void switchOn(int SorP = STATE)
