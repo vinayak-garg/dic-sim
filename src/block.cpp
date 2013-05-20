@@ -17,6 +17,7 @@ void init()
     blockIDMap["AND2"]   = i++;
     blockIDMap["OR2"]    = i++;
     blockIDMap["NOT"]    = i++;
+    blockIDMap["XOR2"]   = i++;
     blockIDMap["NAND3"]  = i++;
     blockIDMap["NOR3"]   = i++;
     blockIDMap["AND3"]   = i++;
@@ -30,6 +31,9 @@ processFn blockFn[] = {
     &_nand_2,
     &_nor_2,
     &_and_2,
+    &_or_2,
+    &_not,
+    &_xor_2,
 };
 
 int mapBlockID(std::string func)
@@ -111,7 +115,57 @@ bool _and_2(const States in, States out)
     return false;
 }
 
+bool _not(const States in, States out)
+{
+    if (in[0] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else if (in[0] == State::high)
+        out[0] = State::low;
+    else
+        out[0] = State::high;
+    return true;
+}
 
+bool _or_2(const States in, States out)
+{
+    if (in[0] == State::high || in[1] == State::high)
+    {
+        out[0] = State::high;
+        return true;
+    }
+    if (in[0] == State::low)
+    {
+        out[0] = in[1];
+
+        //return false if in[1] != State::high
+        return in[1] == State::low;
+    }
+    out[0] = State::undefined;
+    return false;
+}
+
+bool _xor_2(const States in, States out)
+{
+    if (in[0] == State::undefined || in[1] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    if (in[0] == in[1])
+    {
+        out[0] = State::low;
+    }
+    else
+    {
+        out[0] = State::high;
+    }
+    return true;
+}
+
+/*
 bool _nand_3(const States in, States out)
 {
     if (in[0] == State::low || in[1] == State::low || in[2] == State::low)
@@ -126,8 +180,7 @@ bool _nand_3(const States in, States out)
     return true;
 }
 
-/*
-bool nor3(State* s)
+bool _nor_3(const States in, States out)
 {
     if (in[0] == State::high || in[1] == State::high || in[2] == State::high)
         out[0] = State::low;
@@ -136,22 +189,6 @@ bool nor3(State* s)
         out[0] = State::undefined;
         return false;
     }
-    else
-        out[0] = State::high;
-    return true;
-}
-
-
-//Not Logic
-bool not(State* s)
-{
-    if (in[0] == State::undefined)
-    {
-        out[0] = State::undefined;
-        return false;
-    }
-    else if (in[0] == State::high)
-        out[0] = State::low;
     else
         out[0] = State::high;
     return true;
@@ -172,26 +209,6 @@ bool and3(State* s)
     else
         out[0] = State::high;
     return true;
-}
-
-
-//Or Logic
-bool or2(State* s)
-{
-    if (in[0] == State::high || in[1] == State::high)
-    {
-        out[0] = State::high;
-        return true;
-    }
-    if (in[0] == State::low)
-    {
-        out[0] = in[1];
-
-        //return false if in[1] != State::high
-        return in[1] == State::low;
-    }
-    out[0] = State::undefined;
-    return false;
 }
 
 bool or3(State* s)

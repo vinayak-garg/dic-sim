@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     Block::init();
 
     MainWindow window;
-    window.setWindowTitle("DIC Sim v0.1.5");
+    window.setWindowTitle("DIC Sim v0.1.6");
 
     QDesktopWidget *desktop = QApplication::desktop();
 

@@ -237,7 +237,7 @@ void MainWindow::actionAbout()
 {
     QMessageBox::information(this, "About DIC Sim",
         "DIC Sim is a simulator for prototyping circuits built using Digital ICs."
-        "<br/>Author : Vinayak Garg<br/>Version : 0.1.5");
+        "<br/>Author : Vinayak Garg<br/>Version : 0.1.6");
 }
 
 void MainWindow::actionChooseWireColor()
