@@ -138,6 +138,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(toggleInput9, SIGNAL(activated()), this, SLOT(actionToggleInput9()));
     connect(toggleInput0, SIGNAL(activated()), this, SLOT(actionToggleInput0()));
 
+    QShortcut *cheatNO_GND_VCC_sh = new QShortcut(
+        QKeySequence(Qt::Key_N, Qt::Key_G, Qt::Key_V), this);
+    connect(cheatNO_GND_VCC_sh, SIGNAL(activated()), this,
+        SLOT(actionCheatNO_GND_VCC()));
+
     /*************** Central Contents ***************/
     QWidget *centralWidget = new QWidget;
     centralWidget->setObjectName(QObject::tr("centralWidget"));
@@ -161,18 +166,19 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget->setLayout(vLayout);
     setCentralWidget(centralWidget);
 
-    /************* Containers ****************/
+    /*************** Containers *****************/
     icNameList = new QStringList;
     icPinsList = new QStringList;
     icDescList = new QStringList;
     icLabelList = new QStringList;
 
-    /************ Functions ******************/
+    /*************** Functions ******************/
     parseICs();
     icdialog = new ICDialog(this, icNameList, icDescList);
 
-    /************ Booleans *******************/
+    /*************** Booleans *******************/
     circuitState = false;
+    cheatNO_GND_VCC = false;
 }
 
 MainWindow::~MainWindow()
@@ -242,11 +248,19 @@ void MainWindow::actionRunCircuit()
 {
     if (!circuitState)
     {
-        console->togglePower();
         circuit.reset(new Circuit(console));
-        circuit->prepareConnections();
-        circuit->run(console->toggleInputStates);
-        circuitState = true;
+        circuit->stop();
+        if (circuit->prepareConnections(!cheatNO_GND_VCC))
+        {
+            circuit->run(console->toggleInputStates);
+            console->togglePower();
+            circuitState = true;
+        }
+        else
+        {
+            QMessageBox::warning(0, "Fatal Error",
+                "One or more GND or VCC pin of a IC is open or not connected correctly.");
+        }
     }
 }
 
@@ -264,7 +278,7 @@ void MainWindow::actionAbout()
 {
     QMessageBox::information(this, "About DIC Sim",
         "DIC Sim is a simulator for prototyping circuits built using Digital ICs."
-        "<br/>Author : Vinayak Garg<br/>Version : 0.1.6");
+        "<br/>Author : Vinayak Garg<br/>Version : 0.1.7");
 }
 
 void MainWindow::actionChooseWireColor()
@@ -304,7 +318,7 @@ void MainWindow::consoleInputToggled()
     {
         circuit->stop();
         circuit.reset(new Circuit(console));
-        circuit->prepareConnections();
+        circuit->prepareConnections(false);
         circuit->run(console->toggleInputStates);
     }
 }
@@ -319,7 +333,6 @@ void MainWindow::parseICs()
     {
         ICData.clear();
         QFileInfo fileInfo = filelist.at(i);
-        //icNameList->append(fileInfo.baseName());
         QByteArray ba = fileInfo.filePath().toLocal8Bit();
         infile = new std::ifstream(ba.data());
         initLexer(infile);

@@ -9,8 +9,6 @@
 
 #include <QtGui>
 
-#include <bitset>
-
 Circuit::Circuit(Console *_console) : console(_console),
     terminals(kMaxTerminals + 10), outLedList(10)
 {
@@ -53,11 +51,13 @@ Circuit::Circuit(Console *_console) : console(_console),
 #endif
 }
 
-bool Circuit::prepareConnections()
+bool Circuit::prepareConnections(bool checkGND_VCC)
 {
     /*
-     * Connect ICs
+     * Connect ICs and check for GND and VCC
      */
+    int GNDid = Block::mapBlockID("GND");
+    int VCCid = Block::mapBlockID("VCC");
     for (auto ic : icList)
     {
         int l = ic->length();
@@ -72,6 +72,13 @@ bool Circuit::prepareConnections()
             for (size_t i = 0; i < bd.outPin.size(); i++)
             {
                 bd.outPin[i] = mapICpinToCircuit(bd.outPin[i], l, index);
+            }
+            if (checkGND_VCC)
+            {
+                if (bd.id == GNDid && terminals.getstate(bd.outPin[0]) != State::low)
+                    return false;
+                else if (bd.id == VCCid && terminals.getstate(bd.outPin[0]) != State::high)
+                    return false;
             }
             blocks.push_back(bd);
         }

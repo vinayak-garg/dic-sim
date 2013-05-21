@@ -17,7 +17,7 @@ class Circuit
 {
 public:
     Circuit(Console *_console);
-    bool prepareConnections();
+    bool prepareConnections(bool checkGND_VCC);
     bool run(std::vector<State> inputStates);
     void stop();
 protected:

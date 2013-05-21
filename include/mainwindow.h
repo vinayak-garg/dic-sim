@@ -50,6 +50,11 @@ public slots:
     void actionToggleInput9() {actionToggleInput(8);}
     void actionToggleInput0() {actionToggleInput(9);}
 
+    void actionCheatNO_GND_VCC()
+    {
+        cheatNO_GND_VCC = !cheatNO_GND_VCC;
+    }
+
     void consolePowerToggled();
     void consoleInputToggled();
 
@@ -64,6 +69,7 @@ private:
     QList<short> icPinNumList;
     std::unique_ptr<Circuit> circuit;
     bool circuitState;
+    bool cheatNO_GND_VCC;
 };
 
 #endif // MAINWINDOW_H
