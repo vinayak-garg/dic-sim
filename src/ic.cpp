@@ -33,7 +33,7 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->fillRect(x, y + kPinHeight, l*kBox, 2*kBox, b);
     painter->setPen(Qt::lightGray);
     QFontMetrics fm = painter->fontMetrics();
-    painter->drawText(x + 5, y + 2 + fm.height(), name);
+    painter->drawText(x + 15, y + 2 + fm.height(), name);
     b.setColor(Qt::yellow);
     for (int i = 0; i < l; ++i)
     {

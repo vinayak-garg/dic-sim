@@ -367,11 +367,16 @@ void Console::readWire(QDataStream &in)
     line.setPoints(QPointF(x1, y1), QPointF(x2, y2));
     QGraphicsItem* item = this->itemAt(x1, y1);
     Cell *cell;
+    InputCell *inputCell;
     if ((cell = dynamic_cast<Cell *>(item)))
         cell->occupy();
+    else if ((inputCell = dynamic_cast<InputCell *>(item)))
+        inputCell->occupy();
     item = this->itemAt(x2, y2);
     if ((cell = dynamic_cast<Cell *>(item)))
         cell->occupy();
+    else if ((inputCell = dynamic_cast<InputCell *>(item)))
+        inputCell->occupy();
 
     int r, g, b;
     in >> r >> g >> b;
