@@ -7,6 +7,7 @@
 #include "powerbutton.h"
 #include "togglebutton.h"
 #include "block.h"
+#include "constants.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,7 +29,7 @@ int main(int argc, char *argv[])
     Block::init();
 
     MainWindow window;
-    window.setWindowTitle("DIC Sim v0.1.6");
+    window.setWindowTitle(QString("DIC Sim v") + VERSION);
 
     QDesktopWidget *desktop = QApplication::desktop();
 
@@ -42,11 +43,10 @@ int main(int argc, char *argv[])
     window.move(x, y);
 
     window.setStyleSheet(
-                "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
-
-                "QWidget #breadboard{background : #fefcfa; border-radius : 10px}"
-                "QGraphicsView{background : #007700; border-radius : 5px}"
-                );
+        "QWidget #centralWidget{background-image : url(:/bg/images/textures/bg1.png);}"
+        "QWidget #breadboard{background : #fefcfa; border-radius : 10px}"
+        "QGraphicsView{background : #a3a0a0; border-radius : 8px}"
+    );
 
     window.show();
     

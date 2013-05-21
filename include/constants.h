@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+const char VERSION[] = "0.1.7";
+
 const int kTop = 70;
 const int kLeft = 30;
 const int kWidth = 620;

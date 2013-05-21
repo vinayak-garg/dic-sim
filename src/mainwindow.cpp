@@ -189,6 +189,8 @@ void MainWindow::actionNew()
 
     connect(console, SIGNAL(powerToggled()), this, SLOT(consolePowerToggled()));
     connect(console, SIGNAL(inputToggled()), this, SLOT(consoleInputToggled()));
+
+    setWindowTitle(QString("DIC Sim v") + VERSION);
 }
 
 void MainWindow::actionOpen()
@@ -209,6 +211,7 @@ void MainWindow::actionOpen()
         in.setVersion(QDataStream::Qt_4_7);
 
         actionNew();
+        setWindowTitle(QFileInfo(fileName).baseName() + " - DIC Sim v" + VERSION);
         in >> *console;
     }
 }
@@ -326,13 +329,6 @@ void MainWindow::parseICs()
 
         infile->close();
         delete infile;
-/*
-        for (auto it = ICData.begin(); it != ICData.end(); it++)
-        {
-            qDebug() << it->id << ' ' << it->inPin[0] << ','
-                     << it->outPin.size();
-        }
-*/
         ICDataList.push_back(std::move(ICData));
     }
 
