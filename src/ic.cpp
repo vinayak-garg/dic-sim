@@ -31,7 +31,7 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(widget);
     QBrush b(Qt::black);
     painter->fillRect(x, y + kPinHeight, l*kBox, 2*kBox, b);
-    b.setColor(Qt::lightGray);
+    painter->setPen(Qt::lightGray);
     QFontMetrics fm = painter->fontMetrics();
     painter->drawText(x + 5, y + 2 + fm.height(), name);
     b.setColor(Qt::yellow);
