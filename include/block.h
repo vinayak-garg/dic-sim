@@ -19,13 +19,18 @@ namespace Block
     bool _gnd(const States in, States out);
     bool _vcc(const States in, States out);
     bool _nand_2(const States in, States out);
+    bool _nand_3(const States in, States out);
     bool _nor_2(const States in, States out);
+    bool _nor_3(const States in, States out);
+    bool _nor_4(const States in, States out);
+    bool _nor_5(const States in, States out);
     bool _and_2(const States in, States out);
     bool _and_3(const States in, States out);
+    bool _and_4(const States in, States out);
+    bool _and_5(const States in, States out);
     bool _or_2(const States in, States out);
     bool _not(const States in, States out);
     bool _xor_2(const States in, States out);
-    bool _nand_3(const States in, States out);
 
     bool process(int blockID, const States in, States out);
 }

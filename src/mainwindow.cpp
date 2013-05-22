@@ -244,6 +244,7 @@ void MainWindow::actionSave()
         QDataStream out(&file);
         out.setVersion(QDataStream::Qt_4_7);
         out << *console;
+        setWindowTitle(QFileInfo(fileName).baseName() + " - DIC Sim v" + VERSION);
     }
 }
 

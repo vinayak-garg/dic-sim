@@ -5,6 +5,7 @@
 ICDialog::ICDialog(QWidget *parent, QStringList *icName, QStringList *_icDesc) :
     QDialog(parent), icDesc(_icDesc)
 {
+    setWindowTitle("Available ICs");
     iclist = new QListWidget(this);
     iclist->addItems(*icName);
     connect(iclist, SIGNAL(itemSelectionChanged()),
