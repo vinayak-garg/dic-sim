@@ -197,6 +197,9 @@ void MainWindow::actionNew()
     connect(console, SIGNAL(inputToggled()), this, SLOT(consoleInputToggled()));
 
     setWindowTitle(QString("DIC Sim v") + VERSION);
+
+    circuit.reset();
+    circuitState = false;
 }
 
 void MainWindow::actionOpen()
@@ -248,8 +251,9 @@ void MainWindow::actionRunCircuit()
 {
     if (!circuitState)
     {
+        if (circuit)
+            circuit->stop();
         circuit.reset(new Circuit(console));
-        circuit->stop();
         if (circuit->prepareConnections(!cheatNO_GND_VCC))
         {
             circuit->run(console->toggleInputStates);

@@ -31,14 +31,14 @@ public:
     int col;
 
 public slots:
-    void switchOn(int SorP = STATE)
+    void switchOn(int SorP)
     {
         state |= SorP;
         update();
     }
-    void switchOff(int SorP = STATE)
+    void switchOff(int SorP)
     {
-        state &= ~SorP;
+        state &= (POWER - SorP + 1);
         update();
     }
 

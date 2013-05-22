@@ -8,7 +8,7 @@ QPixmap* LED::led_off;
 LED::LED(QPointF p1, QPointF p2, int _col)
 {
     set(p1.x(), p1.y(), p2.x(), p2.y());
-    switchOff(STATE);
+    state = 0;
     col = _col;
 }
 

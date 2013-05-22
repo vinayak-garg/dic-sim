@@ -47,7 +47,7 @@ Circuit::Circuit(Console *_console) : console(_console),
         }
     }
 #ifdef QT_DEBUG
-    terminals.print();
+    //terminals.print();
 #endif
 }
 
@@ -104,6 +104,7 @@ bool Circuit::prepareConnections(bool checkGND_VCC)
         }
     }
 #ifdef QT_DEBUG
+    /*
     for (auto b : blocks)
     {
         std::cout << b.id << '\n';
@@ -111,6 +112,7 @@ bool Circuit::prepareConnections(bool checkGND_VCC)
             std::cout << b.inPin[i] << ' ';
         std::cout << std::endl;
     }
+    */
 #endif
     return true;
 }
