@@ -44,4 +44,6 @@ const int kMaxTerminals = kCols*6
 const int INPUT_OFFSET = kCols*6;
 const int OUTPUT_OFFSET = INPUT_OFFSET + 10;
 
+const int INTERNAL_PIN_OFFSET = 1000;
+
 #endif // CONSTANTS_H

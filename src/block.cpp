@@ -18,9 +18,9 @@ void init()
     blockIDMap["OR2"]    = i++;
     blockIDMap["NOT"]    = i++;
     blockIDMap["XOR2"]   = i++;
+    blockIDMap["AND3"]   = i++;
     blockIDMap["NAND3"]  = i++;
     blockIDMap["NOR3"]   = i++;
-    blockIDMap["AND3"]   = i++;
     blockIDMap["OR3"]    = i++;
 }
 
@@ -34,6 +34,7 @@ processFn blockFn[] = {
     &_or_2,
     &_not,
     &_xor_2,
+    &_and_3,
 };
 
 int mapBlockID(std::string func)
@@ -165,6 +166,20 @@ bool _xor_2(const States in, States out)
     return true;
 }
 
+bool _and_3(const States in, States out)
+{
+    if (in[0] == State::low || in[1] == State::low || in[2] == State::low)
+        out[0] = State::low;
+    else if (in[0] == State::undefined || in[1] == State::undefined || in[2] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::high;
+    return true;
+}
+
 /*
 bool _nand_3(const States in, States out)
 {
@@ -196,20 +211,6 @@ bool _nor_3(const States in, States out)
 
 
 //And Logic
-
-bool and3(State* s)
-{
-    if (in[0] == State::low || in[1] == State::low || in[2] == State::low)
-        out[0] = State::low;
-    else if (in[0] == State::undefined || in[1] == State::undefined || in[2] == State::undefined)
-    {
-        out[0] = State::undefined;
-        return false;
-    }
-    else
-        out[0] = State::high;
-    return true;
-}
 
 bool or3(State* s)
 {

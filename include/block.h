@@ -21,6 +21,7 @@ namespace Block
     bool _nand_2(const States in, States out);
     bool _nor_2(const States in, States out);
     bool _and_2(const States in, States out);
+    bool _and_3(const States in, States out);
     bool _or_2(const States in, States out);
     bool _not(const States in, States out);
     bool _xor_2(const States in, States out);

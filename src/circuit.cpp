@@ -10,7 +10,7 @@
 #include <QtGui>
 
 Circuit::Circuit(Console *_console) : console(_console),
-    terminals(kMaxTerminals + 10), outLedList(10)
+    terminals(1000), outLedList(10)
 {
     QList<QGraphicsItem *> items = console->items();
 
@@ -58,20 +58,40 @@ bool Circuit::prepareConnections(bool checkGND_VCC)
      */
     int GNDid = Block::mapBlockID("GND");
     int VCCid = Block::mapBlockID("VCC");
+    int extraIndex = kMaxTerminals+1;
     for (auto ic : icList)
     {
         int l = ic->length();
         int index = ic->getindex();
+        std::map<int, int> internalPinsToIndex;
         for (auto block : ic->blocks)
         {
             BlockData bd = block;
             for (size_t i = 0; i < bd.inPin.size(); i++)
             {
-                bd.inPin[i] = mapICpinToCircuit(bd.inPin[i], l, index);
+                if (bd.inPin[i] > INTERNAL_PIN_OFFSET)
+                {
+                    if (internalPinsToIndex.count(bd.inPin[i]) == 0)
+                        internalPinsToIndex[bd.inPin[i]] = extraIndex++;
+                    bd.inPin[i] = internalPinsToIndex[bd.inPin[i]];
+                }
+                else
+                {
+                    bd.inPin[i] = mapICpinToCircuit(bd.inPin[i], l, index);
+                }
             }
             for (size_t i = 0; i < bd.outPin.size(); i++)
             {
-                bd.outPin[i] = mapICpinToCircuit(bd.outPin[i], l, index);
+                if (bd.outPin[i] > INTERNAL_PIN_OFFSET)
+                {
+                    if (internalPinsToIndex.count(bd.outPin[i]) == 0)
+                        internalPinsToIndex[bd.outPin[i]] = extraIndex++;
+                    bd.outPin[i] = internalPinsToIndex[bd.outPin[i]];
+                }
+                else
+                {
+                    bd.outPin[i] = mapICpinToCircuit(bd.outPin[i], l, index);
+                }
             }
             if (checkGND_VCC)
             {
