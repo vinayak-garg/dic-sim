@@ -46,16 +46,16 @@ spec : '{' expr_list '}'
 expr_list : expr_list expr | expr
           ;
 
-expr : ine funce oute {ICData.push_back(blockdata);blockdata.reset();}
+expr : out func in {ICData.push_back(blockdata);blockdata.reset();}
      ;
 
-ine  : INT {blockdata.outPin.push_back(atoi(getTokenString()));}
+out  : INT {blockdata.outPin.push_back(atoi(getTokenString()));}
      ;
 
-funce: '=' FUNC {blockdata.id = Block::mapBlockID(getTokenString());}
+func : '=' FUNC {blockdata.id = Block::mapBlockID(getTokenString());}
      ;
 
-oute : '(' args ')'
+in   : '(' args ')'
      | '(' ')'
      ;
 

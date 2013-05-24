@@ -433,7 +433,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "TYPE", "VALUE", "FUNC", "INT", "':'",
   "'{'", "'}'", "'='", "'('", "')'", "','", "$accept", "start", "prop",
-  "type", "value", "spec", "expr_list", "expr", "ine", "funce", "oute",
+  "type", "value", "spec", "expr_list", "expr", "out", "func", "in",
   "args", "arg", 0
 };
 #endif
