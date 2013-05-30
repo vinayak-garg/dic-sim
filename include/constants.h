@@ -3,6 +3,8 @@
 
 const char VERSION[] = "0.1.8";
 
+const int IO_COUNT = 10;
+
 const int kTop = 70;
 const int kLeft = 30;
 const int kWidth = 620;
