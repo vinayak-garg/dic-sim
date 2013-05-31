@@ -321,9 +321,9 @@ void MainWindow::consoleInputToggled()
 {
     if (circuitState)
     {
-        circuit->stop();
-        circuit.reset(new Circuit(console));
-        circuit->prepareConnections(false);
+        //circuit->stop();
+        //circuit.reset(new Circuit(console));
+        //circuit->prepareConnections(false);
         circuit->run(console->toggleInputStates);
     }
 }

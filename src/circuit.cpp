@@ -46,6 +46,11 @@ Circuit::Circuit(Console *_console) : console(_console),
             icList.push_back(ic);
         }
     }
+
+    for (size_t i = 0; i < IO_COUNT; i++)
+    {
+        terminals.setstate(OUTPUT_OFFSET + i, State::undefined);
+    }
 #ifdef QT_DEBUG
     //terminals.print();
 #endif
@@ -121,18 +126,16 @@ bool Circuit::run(std::vector<State> inputStates)
 {
     using namespace Block;
     std::vector<State> blockInput(MAX_INPUTS), blockOutput(MAX_OUTPUTS);
-    bool unsteady = true;
 
     //Set Toggle Buttons State
     for (size_t i = 0; i < inputStates.size(); i++)
     {
         terminals.setstate(INPUT_OFFSET + i, inputStates[i]);
-        terminals.setstate(OUTPUT_OFFSET + i, State::undefined);
+        //terminals.setstate(OUTPUT_OFFSET + i, State::undefined);
     }
 
-    for (int max_iter = blocks.size(); max_iter && unsteady; max_iter--)
+    for (int max_iter = blocks.size()+1; max_iter; max_iter--)
     {
-        unsteady = false;
         for (auto b : blocks)
         {
             //Create copy of input
@@ -141,7 +144,7 @@ bool Circuit::run(std::vector<State> inputStates)
 
             //Process!!
             if (!process(b.id, blockInput, blockOutput))
-                unsteady = true;
+                ;
 
             //Set output
             for (size_t i = 0; i < b.outPin.size(); i++)

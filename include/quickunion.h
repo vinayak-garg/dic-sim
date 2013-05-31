@@ -28,7 +28,7 @@ private:
     void _setFixedState(int a, State s)
     {
         int rootA = root(a);
-        if (state[rootA] != State::high)
+        //if (state[rootA] != State::high)
             state[rootA] = s;
     }
 
