@@ -25,6 +25,9 @@ void init()
     blockIDMap["OR2"]    = i++;
     blockIDMap["NOT"]    = i++;
     blockIDMap["XOR2"]   = i++;
+    blockIDMap["NAND4"]  = i++;
+    blockIDMap["NAND5"]  = i++;
+    blockIDMap["AND6"]   = i++;
 }
 
 processFn blockFn[] = {
@@ -44,6 +47,9 @@ processFn blockFn[] = {
     &_or_2,
     &_not,
     &_xor_2,
+    &_nand_4,
+    &_nand_5,
+    &_and_6,
 };
 
 int mapBlockID(std::string func)
@@ -98,6 +104,39 @@ bool _nand_3(const States in, States out)
     if (in[0] == State::low || in[1] == State::low || in[2] == State::low)
         out[0] = State::high;
     else if (in[0] == State::undefined || in[1] == State::undefined || in[2] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::low;
+    return true;
+}
+
+bool _nand_4(const States in, States out)
+{
+    if (in[0] == State::low || in[1] == State::low || in[2] == State::low
+             || in[3] == State::low)
+        out[0] = State::high;
+    else if (in[0] == State::undefined || in[1] == State::undefined
+              || in[2] == State::undefined || in[3] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::low;
+    return true;
+}
+
+bool _nand_5(const States in, States out)
+{
+    if (in[0] == State::low || in[1] == State::low || in[2] == State::low
+             || in[3] == State::low || in[4] == State::low)
+        out[0] = State::high;
+    else if (in[0] == State::undefined || in[1] == State::undefined
+              || in[2] == State::undefined || in[3] == State::undefined
+              || in[4] == State::undefined)
     {
         out[0] = State::undefined;
         return false;
@@ -226,6 +265,23 @@ bool _and_5(const States in, States out)
     else if (in[0] == State::undefined || in[1] == State::undefined
              || in[2] == State::undefined || in[3] == State::undefined
              || in[4] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::high;
+    return true;
+}
+
+bool _and_6(const States in, States out)
+{
+    if (in[0] == State::low || in[1] == State::low || in[2] == State::low
+            || in[3] == State::low || in[4] == State::low|| in[5] == State::low)
+        out[0] = State::low;
+    else if (in[0] == State::undefined || in[1] == State::undefined
+             || in[2] == State::undefined || in[3] == State::undefined
+             || in[4] == State::undefined || in[5] == State::undefined)
     {
         out[0] = State::undefined;
         return false;
