@@ -51,20 +51,12 @@ MainWindow::MainWindow(QWidget *parent)
     /*
      * Edit Menu
      */
-    QAction *undoAction = new QAction("&Undo", this);
-    undoAction->setShortcut(tr("Ctrl+Z"));
-
-    QAction *redoAction = new QAction("&Redo", this);
-    redoAction->setShortcut(tr("Ctrl+Y"));
-
     QAction *chooseWireColorAction = new QAction("Choose Wire &Color", this);
     chooseWireColorAction->setShortcut(tr("Ctrl+C"));
     connect(chooseWireColorAction, SIGNAL(triggered()), this, SLOT(actionChooseWireColor()));
 
     QMenu *editMenu;
     editMenu = menuBar()->addMenu("&Edit");
-    editMenu->addAction(undoAction);
-    editMenu->addAction(redoAction);
     editMenu->addSeparator();
     editMenu->addAction(chooseWireColorAction);
 
