@@ -3,7 +3,7 @@ DIC Sim
 
 Simulator for prototyping circuits using Digital ICs on a virtual breadboard.
 
-Current version - 0.1.8
+Current version - 1.3.1
 
 Depends On:
  - Qt 4.8.1
