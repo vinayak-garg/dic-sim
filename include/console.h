@@ -36,6 +36,7 @@ public:
     void togglePower();
     void toggleInput(int i);
     void addTag(bool io, int number, QString text);
+    QString getTag(bool io, int number);
 
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;

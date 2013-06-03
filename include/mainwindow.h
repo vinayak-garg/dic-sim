@@ -23,6 +23,7 @@ public slots:
     void actionSave();
     void actionRunCircuit();
     void actionStopCircuit();
+    void actionTruthTable();
     void actionAbout();
     void actionChooseWireColor();
     void actionInsertWire()

@@ -20,6 +20,10 @@ public:
         text = _text;
         update();
     }
+    QString getText()
+    {
+        return text;
+    }
 
     QRectF boundingRect() const
     {

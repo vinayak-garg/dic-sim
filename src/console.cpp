@@ -55,19 +55,39 @@ void Console::toggleInput(int i)
 
 void Console::addTag(bool io, int number, QString text)
 {
+    number--;
     if (io)
     {
         if (inputTags[number])
             inputTags[number]->setText(text);
         else
-            addItem(inputTags[number] = new Tag(48 + (number-1)*70, 575, text));
+            addItem(inputTags[number] = new Tag(48 + number*70, 575, text));
     }
     else
     {
         if (outputTags[number])
             outputTags[number]->setText(text);
         else
-            addItem(outputTags[number] = new Tag(48 + (number-1)*70, 30, text));
+            addItem(outputTags[number] = new Tag(48 + number*70, 30, text));
+    }
+}
+
+QString Console::getTag(bool io, int number)
+{
+    number--;
+    if (io)
+    {
+        if (inputTags[number])
+            return inputTags[number]->getText();
+        else
+            return QString("I") + QString::number(number);
+    }
+    else
+    {
+        if (outputTags[number])
+            return outputTags[number]->getText();
+        else
+            return QString("O") + QString::number(number);
     }
 }
 

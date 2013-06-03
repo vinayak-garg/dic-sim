@@ -10,6 +10,7 @@
 #include "quickunion.h"
 
 #include <vector>
+#include <string>
 
 struct Connection;
 
@@ -20,6 +21,18 @@ public:
     bool prepareConnections(bool checkGND_VCC);
     bool run(std::vector<State> inputStates);
     void stop();
+    std::vector<bool> getUsedInputs()
+    {
+        return usedInput;
+    }
+    std::vector<bool> getUsedOutputs()
+    {
+        return usedOutput;
+    }
+
+    int prepareTruthTable();
+    std::string getOutput(int n);
+
 protected:
     int mapICpinToCircuit(int pin, int l, int topleftindex)
     {
@@ -34,11 +47,17 @@ private:
     std::vector<std::vector<BlockData> > *ICDataListPtr;
     QuickUnion terminals;
     std::vector<bool> usedTerminals;
+    std::vector<bool> usedInput, usedOutput;
+    std::vector<int> inputs, outputs;
     std::vector<Connection> connections;
     std::vector<LED *> ledList;
     std::vector<IC *> icList;
     std::vector<BlockData> blocks;
     std::vector<LED *> outLedList;
+
+    int N;
+    bool silentOutput;
+    std::string TToutput;
 };
 
 struct Connection

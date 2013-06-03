@@ -9,8 +9,8 @@
 
 #include <QtGui>
 
-Circuit::Circuit(Console *_console) : console(_console),
-    terminals(1000), outLedList(10)
+Circuit::Circuit(Console *_console) : console(_console), terminals(1000),
+    outLedList(IO_COUNT), usedInput(IO_COUNT, false), usedOutput(IO_COUNT, false)
 {
     QList<QGraphicsItem *> items = console->items();
 
@@ -32,6 +32,14 @@ Circuit::Circuit(Console *_console) : console(_console),
             }
             else
                 wire->markRedundent(true);
+            if (i >= OUTPUT_OFFSET)
+                usedOutput[i-OUTPUT_OFFSET] = true;
+            else if (i >= INPUT_OFFSET)
+                usedInput[i-INPUT_OFFSET] = true;
+            else if (j >= OUTPUT_OFFSET)
+                usedOutput[j-OUTPUT_OFFSET] = true;
+            else if (j >= INPUT_OFFSET)
+                usedInput[j-INPUT_OFFSET] = true;
         }
         else if ((led = dynamic_cast<LED *>(*it)))
         {
@@ -51,6 +59,7 @@ Circuit::Circuit(Console *_console) : console(_console),
     {
         terminals.setstate(OUTPUT_OFFSET + i, State::undefined);
     }
+    silentOutput = false;
 #ifdef QT_DEBUG
     //terminals.print();
 #endif
@@ -152,6 +161,19 @@ bool Circuit::run(std::vector<State> inputStates)
         }
     }
 
+    if (silentOutput)
+    {
+        for (size_t i = 0; i < outputs.size(); i++)
+        {
+            int j = outputs[i];
+            if (terminals.getstate(OUTPUT_OFFSET+j) == State::high)
+                TToutput[i] = 'T';
+            else
+                TToutput[i] = 'F';
+        }
+        return true;
+    }
+
     for (auto led : ledList)
     {
         int i = console->getOffset(led->line().p1());
@@ -187,4 +209,37 @@ void Circuit::stop()
     {
         led->switchOff(POWER);
     }
+}
+
+int Circuit::prepareTruthTable()
+{
+    inputs.clear();
+    outputs.clear();
+    for (int i = 0; i < IO_COUNT; i++)
+    {
+        if (usedInput[i])
+            inputs.push_back(i);
+        if (usedOutput[i])
+            outputs.push_back(i);
+    }
+    N = inputs.size();
+    TToutput.resize(outputs.size());
+    return N;
+}
+
+std::string Circuit::getOutput(int n)
+{
+    std::vector<State> inputStates(N);
+    for (int i = 0; i < N; i++)
+    {
+        if (1<<i & n)
+            inputStates[inputs[N-1-i]] = State::high;
+        else
+            inputStates[inputs[N-1-i]] = State::low;
+    }
+
+    silentOutput = true;
+    run(inputStates);
+    silentOutput = false;
+    return TToutput;
 }
