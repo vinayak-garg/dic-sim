@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const char VERSION[] = "1.1.1";
+const char VERSION[] = "1.2.1";
 
 const int IO_COUNT = 10;
 
