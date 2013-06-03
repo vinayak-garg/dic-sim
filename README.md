@@ -13,5 +13,5 @@ Depends On:
 ![Inspiration](http://i.imgur.com/MCNHALY.jpg)
 
 ###Development Screenshots
-![Development Screenshot](http://i.imgur.com/1V7AWac.png)
-![Development Screenshot](http://i.imgur.com/2hJkYco.png)
+![Development Screenshot](http://i.imgur.com/z9rkKxt.png)
+![Development Screenshot](http://i.imgur.com/vWYDsoB.png)
