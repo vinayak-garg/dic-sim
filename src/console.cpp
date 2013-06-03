@@ -4,6 +4,7 @@
 #include "console.h"
 #include "cell.h"
 #include "wire.h"
+#include "tag.h"
 #include "led.h"
 #include "ic.h"
 
@@ -25,7 +26,7 @@ Console::Console(QWidget *parent) :
 
     addBreadboard();
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < IO_COUNT; i++)
     {
         addItem(new LED(QPointF(35 + i*70, 30), QPointF(35 + i*70, 30), i));
         addItem(new InputCell(30 + i*70, 50, 8, 8, 0, OUTPUT_OFFSET + i));
@@ -35,6 +36,9 @@ Console::Console(QWidget *parent) :
         addItem(new InputCell(30 + i*70, 570, 8, 8, 0, INPUT_OFFSET + i));
 
         toggleInputStates[i] = State::low;
+
+        inputTags.append(nullptr);
+        outputTags.append(nullptr);
     }
 }
 
@@ -49,6 +53,24 @@ void Console::toggleInput(int i)
     togglebuttonMouseEvent(toggleButtons[i]);
 }
 
+void Console::addTag(bool io, int number, QString text)
+{
+    if (io)
+    {
+        if (inputTags[number])
+            inputTags[number]->setText(text);
+        else
+            addItem(inputTags[number] = new Tag(48 + (number-1)*70, 575, text));
+    }
+    else
+    {
+        if (outputTags[number])
+            outputTags[number]->setText(text);
+        else
+            addItem(outputTags[number] = new Tag(48 + (number-1)*70, 30, text));
+    }
+}
+
 void Console::addBreadboard()
 {
     addItem(new Breadboard(kLeft, kTop));
@@ -57,7 +79,6 @@ void Console::addBreadboard()
     selectedTColor.setRgb(255, 200, 0);
     selectedBColor.setRgb(240, 200, 0);
     terminalColor.setRgb(180, 180, 180);
-    //busColor.setRgb(185, 185, 185);
     borderColor.setRgb(80, 80, 80);
     backgroundColor.setRgb(254, 252, 250);
 
@@ -345,6 +366,7 @@ namespace Item
     const ItemType WIRE = 1;
     const ItemType IC   = 2;
     const ItemType LED  = 3;
+    const ItemType TAG  = 4;
     const ItemType END  = 99;
 }
 
@@ -466,12 +488,31 @@ void Console::readIC(QDataStream &in)
     addItem(new IC(name, l, x, y, index, blocks));
 }
 
+void Console::writeTag(QDataStream &out, const Tag &tag) const
+{
+    out << Item::TAG;
+    bool io = tag.y > 300;
+    int number = (tag.x + 22)/70;
+    out << io << number << tag.text;
+}
+
+void Console::readTag(QDataStream &in)
+{
+    bool io;
+    int number;
+    QString text;
+
+    in >> io >> number >> text;
+    addTag(io, number, text);
+}
+
 QDataStream &operator<<(QDataStream &out, const Console &console)
 {
     auto items = console.items();
     Wire *wire;
     LED *led;
     IC *ic;
+    Tag *tag;
     foreach (QGraphicsItem *item, items)
     {
         if ((wire = dynamic_cast<Wire *>(item)))
@@ -480,6 +521,8 @@ QDataStream &operator<<(QDataStream &out, const Console &console)
             console.writeLED(out, *led);
         else if ((ic = dynamic_cast<IC *>(item)))
             console.writeIC(out, *ic);
+        else if ((tag = dynamic_cast<Tag *>(item)))
+            console.writeTag(out, *tag);
     }
     out << Item::END;
 
@@ -502,6 +545,10 @@ QDataStream &operator>>(QDataStream &in, Console &console)
             break;
         case Item::IC:
             console.readIC(in);
+            break;
+        case Item::TAG:
+            console.readTag(in);
+            break;
         }
 
         in >> it;

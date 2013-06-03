@@ -3,6 +3,7 @@
 
 #include "ic.h"
 #include "led.h"
+#include "tag.h"
 #include "wire.h"
 #include "cell.h"
 #include "state.h"
@@ -19,6 +20,7 @@ enum Mode
 };
 
 class IC;
+class Tag;
 
 class Console : public QGraphicsScene
 {
@@ -33,6 +35,7 @@ public:
     int getOffset(QPointF p);
     void togglePower();
     void toggleInput(int i);
+    void addTag(bool io, int number, QString text);
 
     static const int CONSOLE_WIDTH = 900;
     static const int CONSOLE_HEIGHT = 640;
@@ -65,6 +68,8 @@ private:
     void readLED(QDataStream &in);
     void writeIC(QDataStream &out, const IC &ic) const;
     void readIC(QDataStream &in);
+    void writeTag(QDataStream &out, const Tag &tag) const;
+    void readTag(QDataStream &in);
 
     bool isFirstPoint;
     Mode mode;
@@ -80,6 +85,7 @@ private:
     bool power;
     PowerButton *powerButton;
     QList<ToggleButton *> toggleButtons;
+    QList<Tag *> inputTags, outputTags;
 
     QColor highlightColor;
     QColor selectedTColor;

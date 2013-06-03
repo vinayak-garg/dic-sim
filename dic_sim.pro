@@ -39,7 +39,9 @@ SOURCES += \
     src/cell.cpp \
     src/breadboard.cpp \
     src/block.cpp \
-    include/inputcell.cpp
+    include/inputcell.cpp \
+    src/tag.cpp \
+    src/tagdialog.cpp
 
 HEADERS += \
     include/wire.h \
@@ -62,4 +64,6 @@ HEADERS += \
     include/blockdata.h \
     include/block.h \
     include/constants.h \
-    include/inputcell.h
+    include/inputcell.h \
+    include/tag.h \
+    include/tagdialog.h

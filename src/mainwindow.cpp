@@ -5,6 +5,7 @@
 #include "icdialog.h"
 #include "icviewer.h"
 #include "blockdata.h"
+#include "tagdialog.h"
 
 #include <fstream>
 #include <vector>
@@ -75,11 +76,17 @@ MainWindow::MainWindow(QWidget *parent)
     insertICAction->setShortcut(tr("Ctrl+I"));
     connect(insertICAction, SIGNAL(triggered()), this, SLOT(actionInsertIC()));
 
+    QAction *insertTagAction = new QAction("Insert &Tag", this);
+    insertTagAction->setShortcut(tr("Ctrl+T"));
+    connect(insertTagAction, SIGNAL(triggered()), this, SLOT(actionInsertTag()));
+
     QMenu *insertMenu;
     insertMenu = menuBar()->addMenu("&Insert");
     insertMenu->addAction(insertWireAction);
     insertMenu->addAction(insertLEDAction);
     insertMenu->addAction(insertICAction);
+    insertMenu->addSeparator();
+    insertMenu->addAction(insertTagAction);
 
     /*
      * Circuit Menu
@@ -274,8 +281,8 @@ void MainWindow::actionStopCircuit()
 void MainWindow::actionAbout()
 {
     QMessageBox::information(this, "About DIC Sim",
-        "DIC Sim is a simulator for prototyping circuits built using Digital ICs."
-        "<br/>Author : Vinayak Garg<br/>Version : 0.1.7");
+        QString("DIC Sim is a simulator for prototyping circuits built using Digital ICs.")
+        + QString("<br/>Author : Vinayak Garg<br/>Version : ") + VERSION);
 }
 
 void MainWindow::actionChooseWireColor()
@@ -298,6 +305,15 @@ void MainWindow::actionInsertIC()
         console->setMode(Mode::inserting_ic);
         console->setIC(icNameList->at(index), icPinNumList[index],
                        ICDataList[index]);
+    }
+}
+
+void MainWindow::actionInsertTag()
+{
+    TagDialog td(this, IO_COUNT);
+    if (td.exec() == QDialog::Accepted)
+    {
+        console->addTag(td.getInputOrOutput(), td.getNumber(), td.getText());
     }
 }
 
