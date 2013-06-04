@@ -28,6 +28,8 @@ void init()
     blockIDMap["NAND4"]  = i++;
     blockIDMap["NAND5"]  = i++;
     blockIDMap["AND6"]   = i++;
+    blockIDMap["OR3"]    = i++;
+    blockIDMap["OR4"]    = i++;
 }
 
 processFn blockFn[] = {
@@ -50,6 +52,8 @@ processFn blockFn[] = {
     &_nand_4,
     &_nand_5,
     &_and_6,
+    &_or_3,
+    &_or_4,
 };
 
 int mapBlockID(std::string func)
@@ -321,6 +325,44 @@ bool _or_2(const States in, States out)
     }
     out[0] = State::undefined;
     return false;
+}
+
+bool _or_3(const States in, States out)
+{
+    if (in[0] == State::high || in[1] == State::high || in[2] == State::high)
+    {
+        out[0] = State::high;
+        return true;
+    }
+    else if (in[0] == State::undefined || in[1] == State::undefined || in[2] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::low;
+
+    return true;
+}
+
+bool _or_4(const States in, States out)
+{
+    if (in[0] == State::high || in[1] == State::high || in[2] == State::high
+            || in[3] == State::high)
+    {
+        out[0] = State::high;
+        return true;
+    }
+    else if (in[0] == State::undefined || in[1] == State::undefined
+             || in[2] == State::undefined || in[3] == State::undefined)
+    {
+        out[0] = State::undefined;
+        return false;
+    }
+    else
+        out[0] = State::low;
+
+    return true;
 }
 
 bool _xor_2(const States in, States out)

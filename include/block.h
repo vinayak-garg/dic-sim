@@ -34,6 +34,8 @@ namespace Block
     bool _nand_4(const States in, States out);
     bool _nand_5(const States in, States out);
     bool _and_6(const States in, States out);
+    bool _or_3(const States in, States out);
+    bool _or_4(const States in, States out);
 
     bool process(int blockID, const States in, States out);
 }
